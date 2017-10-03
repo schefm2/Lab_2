@@ -31,9 +31,9 @@ void Timer_Init(void);					//Initialize Timer0 w/SYSCLK and 16bit mode
 void Interrupt_Init();					//Initialize interrupts for Timer0
 void Timer0_ISR(void) __interrupt 1;	//Increments T0_overflows
 unsigned char random(void);				//Generates a random integer 0-7
+void AD_Convert(void);					//Converts Analog Pot signal to Digital
 void Hex_To_Bin(void);					//Runs game mode with button inputs
 void Bin_To_Hex(void);					//Runs game mode with terminal input
-void AD_Convert(void);					//Converts Analog Pot signal to Digital
 
 //-----------------------------------------------------------------------------
 // Global Variables
@@ -55,3 +55,69 @@ __sbit __at 0xB4 BLED;	//BILED configured for P3.4
 __sbit __at 0xB5 BUZZ;	//Buzzer configured for P3.5
 
 unsigned int T0_overflows, sub_count, wait_time;
+
+
+//**************
+void main(void)
+{
+	Sys_Init();			//System initilization
+	Port_Init();		//Initialize ports 1, 2, 3
+	Interrupt_Init();	//Enable Timer0 interrupts
+	Timer_Init();		//Initialize Timer0
+	putchar(' ');		//Mystery magic
+	
+	//begins infinite loop
+	while(1)
+	{
+		
+		
+		
+	}
+	
+}
+
+//**********************************
+void Port_Init(void)
+{
+	
+}
+
+//**********************************
+void Timer_Init(void)
+{
+	
+}
+
+//**********************************
+void Interrupt_Init()
+{
+	
+}
+
+//**********************************
+void Timer0_ISR(void) __interrupt 1
+{
+	
+}
+
+//**********************************
+unsigned char random(void)
+{
+	
+}
+
+//**********************************
+void AD_Convert(void)
+{
+	
+}
+
+//**********************************
+void Hex_To_Bin(void)
+{
+	
+}
+void Bin_To_Hex(void)
+{
+	
+}
