@@ -117,6 +117,8 @@ void Hex_To_Bin(void)
 {
 	
 }
+
+//**********************************
 void Bin_To_Hex(void)
 {
 	
