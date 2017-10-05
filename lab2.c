@@ -36,7 +36,7 @@ void Game_Start(void);					//Opening print statements and instructions
 void Mode_Select(void);					//Selects which game mode is to be played,
 										//And sets game speed
 void The_Seeder(void);					//Generates a pseudorandom seed for rand()
-unsigned char random(void);				//Generates a random integer 0-7
+unsigned char random(void);				//Generates a random integer 0-15
 void Hex_To_Bin(void);					//Runs game mode with button inputs
 void Bin_To_Hex(void);					//Runs game mode with terminal input
 
@@ -65,7 +65,7 @@ __sbit __at 0xB6 BLED2;	//BILED configured for P3.6 & P3.4
 __sbit __at 0xB5 BUZZ;	//Buzzer configured for P3.5
 
 unsigned int T0_overflows, sub_count, wait_time;
-unsigned char SS1MEM;
+unsigned char SS1MEM, toConvert;
 
 
 //**************
@@ -219,8 +219,8 @@ void The_Seeder(void)
 //**********************************
 unsigned char random(void)
 {
-	//Returns a random char 0 to 7 inclusive
-	return (rand()%7);
+	//Returns a random char 0 to 15 inclusive
+	return (rand() % 15);
 }
 
 //**********************************
