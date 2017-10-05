@@ -332,25 +332,25 @@ void manipulateLEDs(void)
         sub_count = T0_overflows;
         while(T0_overflows < sub_count + 20) { }
         //debounce, don't want to change LED 100 times...
-        LED0 = ~LED0;
+        LED0 = !LED0;
     }
     if (!PB1)
     {
         sub_count = T0_overflows;
         while(T0_overflows < sub_count + 20) { }
-        LED1 = ~LED1;
+        LED1 = !LED1;
     }
     if (!PB2)
     {
         sub_count = T0_overflows;
         while(T0_overflows < sub_count + 20) { }
-        LED2 = ~LED2;
+        LED2 = !LED2;
     }
     if (!PB3)
     {
         sub_count = T0_overflows;
         while(T0_overflows < sub_count + 20) { }
-        LED3 = ~LED3;
+        LED3 = !LED3;
     }
 }
 
