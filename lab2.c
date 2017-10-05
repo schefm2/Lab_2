@@ -75,7 +75,7 @@ void main(void)
 	Port_Init();		//Initialize ports 1, 2, 3
 	Interrupt_Init();	//Enable Timer0 interrupts
 	Timer_Init();		//Initialize Timer0
-	ADC_Init();			//Initialize ADC Converter (must be after Timer_Init()!)
+	ADC_Init();			//Initialize ADC Converter (must be after Timer_Init())
 	putchar(' ');		//Mystery magic
 	
 	The_Seeder();		//Generates pseudorandom seed for rand()
@@ -95,7 +95,14 @@ void main(void)
 //**********************************
 void Port_Init(void)
 {
+	P3MDOUT |= 0x7F;	//Sets P3.0 - P3.6 as outputs
 	
+	P2MDOUT &= 0xC0;	//Sets P2.0 - P2.5 as inputs
+	P2 |= ~0xC0;		//Sets high impedance for P2.0 - P2.5
+	
+	P1MDOUT &= 0xFD;	//Sets P1.1 as input
+	P1 |= ~0xFD;		//Sets high impedance P1.1 
+	P1MDIN &= 0xFD;		//Sets P1.1 as analog input
 }
 
 //**********************************
