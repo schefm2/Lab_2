@@ -17,6 +17,13 @@
 	Each game should consist of 8 rounds of either mode. At the end of a game,
 	the program goes back and displays the original instructions to the player,
 	asking which mode they want to play and direction on how to continue.
+
+    Extra Credit things:
+    We added an extra LED and pushbutton. This means the values the player is
+    asked to convert actually get past 7, which means they get to actually
+    interact with hex, not just binary and decimal.
+    We also have a score calculation based on time taken to answer, with
+    wrong answers penalized.
 */
 
 #include <c8051_SDCC.h> // include files. This file is available online
@@ -65,14 +72,16 @@ __sbit __at 0xB4 BLED1;	//BILED configured for P3.4 & P3.6
 __sbit __at 0xB6 BLED2;	//BILED configured for P3.6 & P3.4
 __sbit __at 0xB5 BUZZ;	//Buzzer configured for P3.5
 
-unsigned int T0_overflows; //Timer 0 overflow count
-unsigned int sub_count; //used to refer to time started, like in debouncing
-unsigned int score; //score for the game
-unsigned int wait_time; //time between questions, determined by A/DC
-unsigned char SS1MEM; //state of slide switch 1
-unsigned char SS2MEM; //state of slide switch 2
-unsigned char toConvert; //the number we give player to convert
-unsigned char rounds; //what round we're on
+unsigned int T0_overflows;      //Timer 0 overflow count
+unsigned int sub_count;         //used to refer to time started, like in debouncing
+unsigned int score;             //score for the game
+unsigned int wait_time;         //time between questions, determined by A/DC
+
+unsigned char SS1MEM;           //state of slide switch 1
+unsigned char SS2MEM;           //state of slide switch 2
+unsigned char toConvert;        //the number we give player to convert
+unsigned char rounds;           //what round we're on
+unsigned char num_right;        //number of rounds correctly answered
 
 //**************
 void main(void)
@@ -242,26 +251,39 @@ void Hex_To_Bin(void)
     printf("When ready, flip the enter switch!\r\n");
 
     round = 0;
-    SS2MEM = SS2;
 
-    while (round < 8)
+    while (round++ < 8) //increments round after reading
     {
-        toConvert = random();
+        //Round setup: 
+        // turn off LEDs, BiLED, clear timer, store switch state
+        LED0 = 1; //off
+        LED1 = 1;
+        LED2 = 1;
+        LED3 = 1;
+        BiLED0 = 1; //both sides powered == off
+        BiLED1 = 1;
+        TMR0 = 0; //clear timer
+        SS2MEM = SS2; //store switch state
+
+        toConvert = random(); //generate random number
         printf("Convert %x", toConvert);
 
-        TMR0 = 0; //clear timer
         TR0 = 1; //start timer
+
         while (SS2 == SS2MEM && T0_overflows < wait_time)
             //not yet submitted, wait until out of time to answer
         {
             //player manipulates LEDs to get binary answer
             manipulateLEDs();
         }
-        //SS2MEM != SS2, change for next loop.
-        SS2MEM = SS2;
         TR0 = 0; //pause
         score += T0_overflows;
+        //if right, light BiLED green
+        //if wrong, light BiLED red, add penalized score
     }
+
+    printf("You've completed the game! Your score was %d: you answered %d out of 8 right.",
+            score, num_right);
 
 }
 
