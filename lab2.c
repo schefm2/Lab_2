@@ -198,7 +198,7 @@ void Mode_Select(void)
        100 percent, wait_time will be 1519 + 169 = 1688,
        and at 0 percent wait_time will be 0 + 169 = 169. 
      */
-    wait_time = (Read_AD_Input() * 1519) / 255 + 169;
+    wait_time = (read_AD_input(1) * 1519) / 255 + 169;
 
     if(SS1)
     {
@@ -255,9 +255,9 @@ void Hex_To_Bin(void)
     //Init some vars
     score = 0;
     num_right = 0;
-    round = 0;
+    rounds = 0;
 
-    while (round++ < 8) //increments round after reading
+    while (rounds++ < 8) //increments round after reading
     {
         //Round setup: 
         // turn off LEDs, BiLED, clear timer, store switch state
@@ -265,8 +265,8 @@ void Hex_To_Bin(void)
         LED1 = 1;
         LED2 = 1;
         LED3 = 1;
-        BiLED0 = 1; //both sides powered == off
-        BiLED1 = 1;
+        BLED1 = 1; //both sides powered == off
+        BLED2 = 1;
         TMR0 = 0; //clear timer
         SS2MEM = SS2; //store switch state
 
@@ -295,8 +295,8 @@ void Hex_To_Bin(void)
         {
             //which color this is is hardware dependent
             //green?
-            BiLED0 = 0;
-            BiLED1 = 1;
+            BLED1 = 0;
+            BLED2 = 1;
 
             ++num_right;
         }
@@ -305,8 +305,8 @@ void Hex_To_Bin(void)
             //answer is wrong
         {
             //red?
-            BiLED0 = 1;
-            BiLED1 = 0;
+            BLED1 = 1;
+            BLED2 = 0;
 
             //add penalized score
             score += 2 * wait_time;
