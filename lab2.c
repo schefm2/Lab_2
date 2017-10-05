@@ -29,11 +29,19 @@
 void Port_Init(void);					//Initialize ports for I/O
 void Timer_Init(void);					//Initialize Timer0 w/SYSCLK and 16bit mode
 void Interrupt_Init();					//Initialize interrupts for Timer0
+void ADC_Init();						//Initialize the ADC converter
 void Timer0_ISR(void) __interrupt 1;	//Increments T0_overflows
+
+void Game_Start(void);					//Opening print statements and instructions
+void Mode_Select(void);					//Selects which game mode is to be played,
+										//And sets game speed
+void The_Seeder(void);					//Generates a pseudorandom seed for rand()
 unsigned char random(void);				//Generates a random integer 0-7
-void AD_Convert(void);					//Converts Analog Pot signal to Digital
 void Hex_To_Bin(void);					//Runs game mode with button inputs
 void Bin_To_Hex(void);					//Runs game mode with terminal input
+
+//Converts Analog Pot signal to Digital
+unsigned char read_AD_input(unsigned char pin_number);
 
 //-----------------------------------------------------------------------------
 // Global Variables
@@ -44,17 +52,20 @@ __sbit __at 0xA0 PB0;	//Pushbutton configured for P2.0
 __sbit __at 0xA1 PB1;	//Pushbutton configured for P2.1
 __sbit __at 0xA2 PB2;	//Pushbutton configured for P2.2
 __sbit __at 0xA3 PB3;	//Pushbutton configured for P2.3
-__sbit __at 0xA4 SS;	//Pushbutton configured for P2.4
+__sbit __at 0xA4 SS1;	//Pushbutton configured for P2.4
+__sbit __at 0xA5 SS2;	//Pushbutton configured for P2.5
 
 //sbits for output devices
 __sbit __at 0xB0 LED0;	//LED configured for P3.0
 __sbit __at 0xB1 LED1;	//LED configured for P3.1
 __sbit __at 0xB2 LED2;	//LED configured for P3.2
 __sbit __at 0xB3 LED3;	//LED configured for P3.3
-__sbit __at 0xB4 BLED;	//BILED configured for P3.4
+__sbit __at 0xB4 BLED1;	//BILED configured for P3.4 & P3.6
+__sbit __at 0xB6 BLED2;	//BILED configured for P3.6 & P3.4
 __sbit __at 0xB5 BUZZ;	//Buzzer configured for P3.5
 
 unsigned int T0_overflows, sub_count, wait_time;
+unsigned char SS1MEM;
 
 
 //**************
@@ -64,17 +75,22 @@ void main(void)
 	Port_Init();		//Initialize ports 1, 2, 3
 	Interrupt_Init();	//Enable Timer0 interrupts
 	Timer_Init();		//Initialize Timer0
+	ADC_Init();			//Initialize ADC Converter (must be after Timer_Init()!)
 	putchar(' ');		//Mystery magic
+	
+	The_Seeder();		//Generates pseudorandom seed for rand()
 	
 	//begins infinite loop
 	while(1)
 	{
-		
+		Game_Start();
+		Mode_Select();
 		
 		
 	}
 	
 }
+
 
 //**********************************
 void Port_Init(void)
@@ -85,31 +101,129 @@ void Port_Init(void)
 //**********************************
 void Timer_Init(void)
 {
-	
+	CKCON |= 0x08;  // Timer0 uses SYSCLK as source
+	TMOD &= 0xF0;   // clear the 4 least significant bits
+	TMOD |= 0x01;   // Timer0 in mode 1 (16 bit)
+    TR0 = 0;		// Stop Timer0
+    TMR0 = 0;		// Clear high & low byte of T0
+
 }
 
 //**********************************
 void Interrupt_Init()
 {
-	
+	EA = 1;
+	ET0 = 1;
 }
+
+
+//**********************************
+void ADC_Init(void)
+{
+	REF0CN = 0x03;	//Sets V_ref as 2.4V
+	ADC1CN = 0x80;	//Enables AD/C converter
+
+	//Gives capacitors in A/D converter time to charge
+	T0_overflows = 0;		//Ensures overflow counter starts at 0
+	TR0 = 1;				//Starts Timer0
+	while(T0_overflows<20);	//Waits for ~60 ms
+	TR0 = 0;				//Pauses Timer0
+	
+	//Resets timer0 and overflow counter
+	TMR0 = 0;
+	T0_overflows = 0;
+
+	//Sets gain to 1
+	ADC1CF |= 0x01;
+	ADC1CF &= 0xFD;
+}
+
 
 //**********************************
 void Timer0_ISR(void) __interrupt 1
 {
-	
+	T0_overflows++;		//Increments timer0 overflow count
 }
+
+
+//**********************************
+void Game_Start(void)
+{
+	//Sets all LEDs, BLED, and BUZZ off
+	LED0 = 1;
+	LED1 = 1;
+	LED2 = 1;
+	LED3 = 1;
+	BLED1 = 1;
+	BLED2 = 1;
+	BUZZ = 1;
+	
+	//Beginning game instructions
+	printf("To select the Bin to Hex game mode, move the leftmost slide switch to the left.\r\n");
+	printf("To select the Hex to Bin game mode, move the leftmost slide switch to the right.\r\n");
+	printf("Rotate the blue potentiometer clockwise to speed up the wait time for a game round.\r\n");
+	printf("When you are ready to start the game, flip the slideswitch on the right.\r\n");
+	while (SS2);	//Waits until the enter slideswitch is on to start the game
+}
+
+void Mode_Select(void)
+{
+	/*
+	The AD_Convert will return a value between
+	0 and 255 inclusive. The desired range of
+	wait time is 500 ms to 5000 ms. Since each
+	overflow of our Timer0 last ~2.96 ms, this
+	means we need overflow values from 168.75
+	to 1687.5, or 169 to 1688 approximately.
+	AD_Convert is turned into a percentage. At
+	100 percent, wait_time will be 1519 + 169 = 1688,
+	and at 0 percent wait_time will be 0 + 169 = 169. 
+	*/
+	wait_time = (Read_AD_Input() * 1519) / 255 + 169;
+	
+	if(SS1)
+	{
+		//Runs Hex to Bin game mode
+		Hex_To_Bin();
+	}
+	else
+	{
+		//Runs Bin to Hex game mode
+		Bin_To_Hex();
+	}
+}
+
+//**********************************
+void The_Seeder(void)
+{
+	SS1MEM = SS1;			//Records state of SS1
+	TR0 = 1;				//Starts Timer0
+	printf("\r\nPlease turn the leftmost slide switch to generate a random game\r\n");
+	while(SS1 == SS1MEM);	//Waits until slide switch is used
+	TR0 = 0;				//Stops Timer0
+	srand(T0_overflows);	//Uses overflow counter to seed srand
+	
+	//Resets overflow timer and Timer0
+	T0_overflows = 0;
+	TMR0 = 0;
+}
+
 
 //**********************************
 unsigned char random(void)
 {
-	
+	//Returns a random char 0 to 7 inclusive
+	return (rand()%7);
 }
 
 //**********************************
-void AD_Convert(void)
+unsigned char read_AD_input(unsigned char pin_number)
 {
-	
+	AMX1SL = pin_number;
+	ADC1CN &= ~0x20;			//Clears the A/D conversion complete bit
+	ADC1CN |= 0x10;				//Starts A/D conversion
+	while(!(ADC1CN & 0x20));	//Waits until conversion completes 
+	return ADC1;
 }
 
 //**********************************
