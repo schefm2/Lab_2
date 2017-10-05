@@ -39,6 +39,7 @@ void The_Seeder(void);					//Generates a pseudorandom seed for rand()
 unsigned char random(void);				//Generates a random integer 0-15
 void Hex_To_Bin(void);					//Runs game mode with button inputs
 void Bin_To_Hex(void);					//Runs game mode with terminal input
+void manipulateLEDs(void);              //Read player button pushes, light LEDs
 
 //Converts Analog Pot signal to Digital
 unsigned char read_AD_input(unsigned char pin_number);
@@ -238,7 +239,25 @@ void Hex_To_Bin(void)
     printf("\r\nConvert from Hex values to Binary!\r\n");
     printf("Use the push buttons to light up the LEDs; lit LED = 1, unlit = 0.\r\n");
     printf("When ready, flip the enter switch!\r\n");
-    printf("Convert %x", toConvert);
+
+    round = 0;
+    SS2MEM = SS2;
+
+    while (round < 8)
+    {
+        toConvert = random();
+        printf("Convert %x", toConvert);
+
+        TMR0 = 0; //clear timer
+        TR0 = 1; //start timer
+        while (SS2 == SS2MEM)
+        {
+            //not yet submitted, wait
+            //player manipulates LEDs to get binary answer
+            manipulateLEDs();
+        }
+       TR0 = 0; //pause
+    }
 	
 }
 
@@ -246,4 +265,24 @@ void Hex_To_Bin(void)
 void Bin_To_Hex(void)
 {
 	
+}
+
+void manipulateLEDs(void)
+{
+    if (!PB0)
+    {
+        LED0 = ~LED0;
+    }
+    if (!PB1)
+    {
+        LED1 = ~LED1;
+    }
+    if (!PB2)
+    {
+        LED2 = ~LED2;
+    }
+    if (!PB3)
+    {
+        LED3 = ~LED3;
+    }
 }
