@@ -64,9 +64,13 @@ __sbit __at 0xB4 BLED1;	//BILED configured for P3.4 & P3.6
 __sbit __at 0xB6 BLED2;	//BILED configured for P3.6 & P3.4
 __sbit __at 0xB5 BUZZ;	//Buzzer configured for P3.5
 
-unsigned int T0_overflows, sub_count, wait_time;
-unsigned char SS1MEM, SS2MEM, toConvert;
-
+unsigned int T0_overflows;
+unsigned int sub_count;
+unsigned int wait_time;
+unsigned char SS1MEM;
+unsigned char SS2MEM;
+unsigned char toConvert;
+unsigned char rounds;
 
 //**************
 void main(void)
@@ -85,12 +89,9 @@ void main(void)
 	{
 		Game_Start();
 		Mode_Select();
-		
-		
 	}
 	
 }
-
 
 //**********************************
 void Port_Init(void)
@@ -113,7 +114,6 @@ void Timer_Init(void)
 	TMOD |= 0x01;   // Timer0 in mode 1 (16 bit)
     TR0 = 0;		// Stop Timer0
     TMR0 = 0;		// Clear high & low byte of T0
-
 }
 
 //**********************************
@@ -122,7 +122,6 @@ void Interrupt_Init()
 	EA = 1;
 	ET0 = 1;
 }
-
 
 //**********************************
 void ADC_Init(void)
@@ -145,13 +144,11 @@ void ADC_Init(void)
 	ADC1CF &= 0xFD;
 }
 
-
 //**********************************
 void Timer0_ISR(void) __interrupt 1
 {
 	T0_overflows++;		//Increments timer0 overflow count
 }
-
 
 //**********************************
 void Game_Start(void)
@@ -238,6 +235,10 @@ unsigned char read_AD_input(unsigned char pin_number)
 //**********************************
 void Hex_To_Bin(void)
 {
+    printf("\r\nConvert from Hex values to Binary!\r\n");
+    printf("Use the push buttons to light up the LEDs; lit LED = 1, unlit = 0.\r\n");
+    printf("When ready, flip the enter switch!\r\n");
+    printf("Convert %x", toConvert);
 	
 }
 
