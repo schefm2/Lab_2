@@ -252,6 +252,9 @@ void Hex_To_Bin(void)
     printf("Use the push buttons to light up the LEDs; lit LED = 1, unlit = 0.\r\n");
     printf("When ready, flip the enter switch!\r\n");
 
+    //Init some vars
+    score = 0;
+    num_right = 0;
     round = 0;
 
     while (round++ < 8) //increments round after reading
@@ -294,12 +297,13 @@ void Hex_To_Bin(void)
             //green?
             BiLED0 = 0;
             BiLED1 = 1;
+
+            ++num_right;
         }
 
         else
             //answer is wrong
         {
-            //which color this is is hardware dependent
             //red?
             BiLED0 = 1;
             BiLED1 = 0;
