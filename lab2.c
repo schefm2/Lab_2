@@ -47,6 +47,7 @@ unsigned char random(void);				//Generates a random integer 0-15
 void Hex_To_Bin(void);					//Runs game mode with button inputs
 void Bin_To_Hex(void);					//Runs game mode with terminal input
 void manipulateLEDs(void);              //Read player button pushes, light LEDs
+unsigned int enteredBinary(void);       //Calculates answer from pushbuttons/LEDs
 
 //Converts Analog Pot signal to Digital
 unsigned char read_AD_input(unsigned char pin_number);
@@ -82,6 +83,7 @@ unsigned char SS2MEM;           //state of slide switch 2
 unsigned char toConvert;        //the number we give player to convert
 unsigned char rounds;           //what round we're on
 unsigned char num_right;        //number of rounds correctly answered
+unsigned char bin_val_sub;      //number in binary submitted
 
 //**************
 void main(void)
@@ -278,8 +280,34 @@ void Hex_To_Bin(void)
         }
         TR0 = 0; //pause
         score += T0_overflows;
+
+        //since all vars are global, don't need to assign...
+        enteredBinary();
+
         //if right, light BiLED green
         //if wrong, light BiLED red, add penalized score
+
+        if ( bin_val_sub == toConvert )
+            //answer is right
+        {
+            //which color this is is hardware dependent
+            //green?
+            BiLED0 = 0;
+            BiLED1 = 1;
+        }
+
+        else
+            //answer is wrong
+        {
+            //which color this is is hardware dependent
+            //red?
+            BiLED0 = 1;
+            BiLED1 = 0;
+
+            //add penalized score
+            score += 2 * wait_time;
+        }
+
     }
 
     printf("You've completed the game! Your score was %d: you answered %d out of 8 right.",
@@ -320,4 +348,31 @@ void manipulateLEDs(void)
         while(T0_overflows < sub_count + 20) { }
         LED3 = ~LED3;
     }
+}
+
+unsigned int enteredBinary(void )
+{
+    bin_val_sub = 0; //clear any old data
+    //Add from largest bit to smallest bit.
+    if (LED3)
+    {
+        bin_val_sub += LED3;
+        bin_val_sub << 3;
+    }
+    if (LED2)
+    {
+        bin_val_sub += LED2;
+        bin_val_sub << 2;
+    }
+    if (LED1)
+    {
+        bin_val_sub += LED1;
+        bin_val_sub << 1;
+    }
+    if (LED0)
+    {
+        bin_val_sub += LED0;
+        //bin_val_sub << 0; unnecessary.
+    }
+    return bin_val_sub;
 }
