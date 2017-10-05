@@ -188,7 +188,7 @@ void Game_Start(void)
 void Mode_Select(void)
 {
     /*
-       The AD_Convert will return a value between
+       The read_AD_input will return a value between
        0 and 255 inclusive. The desired range of
        wait time is 500 ms to 5000 ms. Since each
        overflow of our Timer0 last ~2.96 ms, this
@@ -314,7 +314,7 @@ void Hex_To_Bin(void)
 
     }
 
-    printf("You've completed the game! Your score was %d: you answered %d out of 8 right.",
+    printf("You've completed the game! Your score was %d: you answered %d out of 8 right.\r\n",
             score, num_right);
 
 }
@@ -325,6 +325,7 @@ void Bin_To_Hex(void)
 
 }
 
+//**********************************
 void manipulateLEDs(void)
 {
     if (!PB0)
@@ -354,7 +355,8 @@ void manipulateLEDs(void)
     }
 }
 
-unsigned int enteredBinary(void )
+//**********************************
+unsigned int enteredBinary(void)
 {
     bin_val_sub = 0; //clear any old data
     //Add from largest bit to smallest bit.
