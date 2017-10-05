@@ -65,7 +65,7 @@ __sbit __at 0xB6 BLED2;	//BILED configured for P3.6 & P3.4
 __sbit __at 0xB5 BUZZ;	//Buzzer configured for P3.5
 
 unsigned int T0_overflows, sub_count, wait_time;
-unsigned char SS1MEM, toConvert;
+unsigned char SS1MEM, SS2MEM, toConvert;
 
 
 //**************
@@ -170,7 +170,9 @@ void Game_Start(void)
 	printf("To select the Hex to Bin game mode, move the leftmost slide switch to the right.\r\n");
 	printf("Rotate the blue potentiometer clockwise to speed up the wait time for a game round.\r\n");
 	printf("When you are ready to start the game, flip the slideswitch on the right.\r\n");
-	while (SS2);	//Waits until the enter slideswitch is on to start the game
+	
+	SS2MEM = SS2;			//Stores position of enter slideswitch
+	while (SS2 == SS2MEM);	//Waits until the enter slideswitch is flipped to start the game
 }
 
 void Mode_Select(void)
