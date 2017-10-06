@@ -333,64 +333,102 @@ void Hex_To_Bin(void)
 
 //**********************************
 void Bin_To_Hex(void)
-{
+{   
     for(unsigned char i=0; i<8; i++)
     {
+        LED0 = 1; //off
+        LED1 = 1;
+        LED2 = 1;
+        LED3 = 1;
+        BLED1 = 1; //both sides powered == off
+        BLED2 = 1;
+        TR0 = 0;
+        TMR0 = 0; //clear timer
+        SS2MEM = SS2; //store switch state
+        T0_overflows = 0;
+
+        unsigned char input;
         unsigned char randNum = random(); //get random number to display
-        unsigned char answer = randNum
+        unsigned char answer = randNum;
+        printf("Convert %x\r\n", randNum);
+        num_right = 0;
+
         
         for(unsigned char j=0; j<4; j++)
         {
+
             if((randNum%2)==1) //checks if last binary digit should be one
             {
                 //if binaray digit being checked is one turn on corresponding LED
-                if(j==0){LED3=1};
-                if(j==1){LED2=1};
-                if(j==2){LED1=1};
-                if(j==3){LED0=1};
+                if(j==0){LED3=0;}
+                if(j==1){LED2=0;}
+                if(j==2){LED1=0;}
+                if(j==3){LED0=0;}
             }
             randNum = randNum>>;
         }
+        TR0 = 1; //start timer
         input = getchar();
-
-        //check for ascii values 1-9
-        if(int(input)>90)
+        TR0 = 0; //stop timer
+        if(T0_overflows>wait_time)
         {
-            //convert ascii of hex to decimal and compare to answer
-            if((input-91)== answer)
-            {
-                //turn LED green
-                BLED1 = 0;
-                BLED2 = 1;
-                wins++;
-            }
-            else
-            {
-               //turn LED red
-                BLED1 = 1;
-                BLED2 = 0;
-            }
         }
-
-        //check for ascii values A-E
         else
         {
-            //convert ascii of hex to decimal and compare to answer
-            if((input+9)== answer)
+            //check for ascii values 1-9
+            if(int(input)>90)
             {
-                wins++;
-                //turn LED green
-                BLED1=0;
-                BLED2=1;
+                //convert ascii of hex to decimal and compare to answer
+                if((input-91)== answer)
+                {
+                    //turn LED green
+                    BLED1 = 0;
+                    BLED2 = 1;
+                    num_right++;
+                    score +=  10 – (10*T0_overflows)/wait_time;
+
+                }
+                else
+                {
+                   //turn LED red
+                    BLED1 = 1;
+                    BLED2 = 0;
+                }
             }
+
+            //check for ascii values A-E
             else
             {
-                //turn LED red
-                BLED1 = 1;
-                BLED2 = 0
+                //convert ascii of hex to decimal and compare to answer
+                if((input+9)== answer)
+                {
+                    num_right++;
+                    //turn LED green
+                    BLED1=0;
+                    BLED2=1;
+                    score +=  10 – (10*T0_overflows)/wait_time;
+                }
+                else
+                {
+                    //turn LED red
+                    BLED1 = 1;
+                    BLED2 = 0;
+                }
             }
         }
+
+        //some time before next round starts
+        TMR0 = 0; //clear timer
+        T0_overflows=0;
+        TR0 = 1;
+        while (T0_overflows < 169) { }
+        TR0 = 0;
+        //turn off BILED
+        BLED1=1;
+        BLED2=1;
     }
+    printf("You've completed the game! Your score was %d: you answered %d out of 8 right.\r\n",
+            score, num_right);
 }
 
 //**********************************
