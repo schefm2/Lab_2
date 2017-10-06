@@ -198,7 +198,7 @@ void Mode_Select(void)
        100 percent, wait_time will be 1519 + 169 = 1688,
        and at 0 percent wait_time will be 0 + 169 = 169. 
      */
-    wait_time = (read_AD_input(1) * 1519) / 255 + 169;
+    wait_time = (read_AD_input(1) / 255) * 1519 + 169;
 
     if(SS1)
     {
@@ -267,9 +267,9 @@ void Hex_To_Bin(void)
         LED3 = 1;
         BLED1 = 1; //both sides powered == off
         BLED2 = 1;
+		TR0 = 0;	//pause timer
         TMR0 = 0; //clear timer
         SS2MEM = SS2; //store switch state
-        TR0 = 0;
         T0_overflows = 0;
 
         toConvert = random(); //generate random number
@@ -334,6 +334,7 @@ void Hex_To_Bin(void)
 //**********************************
 void Bin_To_Hex(void)
 {
+	/*
     for(unsigned char i=0; i<8; i++)
     {
         unsigned char randNum = random(); //get random number to display
@@ -344,10 +345,10 @@ void Bin_To_Hex(void)
             if((randNum%2)==1) //checks if last binary digit should be one
             {
                 //if binaray digit being checked is one turn on corresponding LED
-                if(j==0){LED3=1};
-                if(j==1){LED2=1};
-                if(j==2){LED1=1};
-                if(j==3){LED0=1};
+                if(j==0){LED3=0;}
+                if(j==1){LED2=0;}
+                if(j==2){LED1=0;}
+                if(j==3){LED0=0;}
             }
             randNum = randNum>>;
         }
@@ -391,6 +392,7 @@ void Bin_To_Hex(void)
             }
         }
     }
+	*/
 }
 
 //**********************************
