@@ -334,7 +334,63 @@ void Hex_To_Bin(void)
 //**********************************
 void Bin_To_Hex(void)
 {
+    for(unsigned char i=0; i<8; i++)
+    {
+        unsigned char randNum = random(); //get random number to display
+        unsigned char answer = randNum
+        
+        for(unsigned char j=0; j<4; j++)
+        {
+            if((randNum%2)==1) //checks if last binary digit should be one
+            {
+                //if binaray digit being checked is one turn on corresponding LED
+                if(j==0){LED3=1};
+                if(j==1){LED2=1};
+                if(j==2){LED1=1};
+                if(j==3){LED0=1};
+            }
+            randNum = randNum>>;
+        }
+        input = getchar();
 
+        //check for ascii values 1-9
+        if(int(input)>90)
+        {
+            //convert ascii of hex to decimal and compare to answer
+            if((input-91)== answer)
+            {
+                //turn LED green
+                BLED1 = 0;
+                BLED2 = 1;
+                wins++;
+            }
+            else
+            {
+               //turn LED red
+                BLED1 = 1;
+                BLED2 = 0;
+            }
+        }
+
+        //check for ascii values A-E
+        else
+        {
+            //convert ascii of hex to decimal and compare to answer
+            if((input+9)== answer)
+            {
+                wins++;
+                //turn LED green
+                BLED1=0;
+                BLED2=1;
+            }
+            else
+            {
+                //turn LED red
+                BLED1 = 1;
+                BLED2 = 0
+            }
+        }
+    }
 }
 
 //**********************************
