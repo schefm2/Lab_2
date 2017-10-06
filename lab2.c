@@ -334,7 +334,7 @@ void Hex_To_Bin(void)
 //**********************************
 void Bin_To_Hex(void)
 {
-	/*
+	
     for(unsigned char i=0; i<8; i++)
     {
         LED0 = 1; //off
@@ -431,7 +431,7 @@ void Bin_To_Hex(void)
     printf("You've completed the game! Your score was %d: you answered %d out of 8 right.\r\n",
             score, num_right);
 
-	*/
+	
 }
 
 //**********************************
