@@ -269,17 +269,24 @@ void Hex_To_Bin(void)
         BLED2 = 1;
         TMR0 = 0; //clear timer
         SS2MEM = SS2; //store switch state
+        TR0 = 0;
+        T0_overflows = 0;
 
         toConvert = random(); //generate random number
-        printf("Convert %x", toConvert);
+        printf("Convert %x\r\n", toConvert);
 
         TR0 = 1; //start timer
 
-        while (SS2 == SS2MEM && T0_overflows < wait_time)
+        //while (SS2 == SS2MEM && T0_overflows < wait_time)
+        while (T0_overflows < wait_time)
             //not yet submitted, wait until out of time to answer
         {
             //player manipulates LEDs to get binary answer
             manipulateLEDs();
+            if (SS2 != SS2MEM)
+            {
+                break;
+            }
         }
         TR0 = 0; //pause
         score += T0_overflows;
@@ -293,8 +300,8 @@ void Hex_To_Bin(void)
         if ( bin_val_sub == toConvert )
             //answer is right
         {
-            //which color this is is hardware dependent
-            //green?
+            //color is hardware dependent
+            //green
             BLED1 = 0;
             BLED2 = 1;
 
@@ -304,7 +311,7 @@ void Hex_To_Bin(void)
         else
             //answer is wrong
         {
-            //red?
+            //red
             BLED1 = 1;
             BLED2 = 0;
 
@@ -312,6 +319,11 @@ void Hex_To_Bin(void)
             score += 2 * wait_time;
         }
 
+        //some time before next round starts
+        sub_count = T0_overflows;
+        TR0 = 1;
+        while (T0_overflows < sub_count+wait_time) { }
+        TR0 = 0;
     }
 
     printf("You've completed the game! Your score was %d: you answered %d out of 8 right.\r\n",
