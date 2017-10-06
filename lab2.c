@@ -429,6 +429,12 @@ void Bin_To_Hex(void)
     }
     printf("You've completed the game! Your score was %d: you answered %d out of 8 right.\r\n",
             score, num_right);
+    
+    BUZZ=0;
+    TR0 = 1;
+    while (T0_overflows < 169) { }
+    TR0 = 0;
+    BUZZ=1;
 }
 
 //**********************************
