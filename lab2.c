@@ -73,6 +73,8 @@ __sbit __at 0xB4 BLED1;	//BILED configured for P3.4 & P3.6
 __sbit __at 0xB6 BLED2;	//BILED configured for P3.6 & P3.4
 __sbit __at 0xB5 BUZZ;	//Buzzer configured for P3.5
 
+float wait_converter;	//Allows wait_time to function properly 
+
 unsigned int T0_overflows;      //Timer 0 overflow count
 unsigned int sub_count;         //used to refer to time started, like in debouncing
 unsigned int score;             //score for the game
@@ -198,7 +200,8 @@ void Mode_Select(void)
        100 percent, wait_time will be 1519 + 169 = 1688,
        and at 0 percent wait_time will be 0 + 169 = 169. 
      */
-    wait_time = (read_AD_input(1) / 255) * 1519 + 169;
+    wait_converter = ((float)read_AD_input(1) / 255) * 1519 + 169;
+	wait_time = wait_converter;
 
     if(SS1)
     {
@@ -322,7 +325,7 @@ void Hex_To_Bin(void)
         //some time before next round starts
         sub_count = T0_overflows;
         TR0 = 1;
-        while (T0_overflows < sub_count+wait_time) { }
+        while (T0_overflows < sub_count + 675) { }
         TR0 = 0;
     }
 
@@ -444,26 +447,26 @@ void manipulateLEDs(void)
     if (!PB0)
     {
         sub_count = T0_overflows;
-        while(T0_overflows < sub_count + 40) { }
+        while(T0_overflows < sub_count + 60) { }
         //debounce, don't want to change LED 100 times...
         LED0 = !LED0;
     }
     if (!PB1)
     {
         sub_count = T0_overflows;
-        while(T0_overflows < sub_count + 40) { }
+        while(T0_overflows < sub_count + 60) { }
         LED1 = !LED1;
     }
     if (!PB2)
     {
         sub_count = T0_overflows;
-        while(T0_overflows < sub_count + 40) { }
+        while(T0_overflows < sub_count + 60) { }
         LED2 = !LED2;
     }
     if (!PB3)
     {
         sub_count = T0_overflows;
-        while(T0_overflows < sub_count + 40) { }
+        while(T0_overflows < sub_count + 60) { }
         LED3 = !LED3;
     }
 }
@@ -473,37 +476,9 @@ unsigned int enteredBinary(void)
 {
     bin_val_sub = 0; //clear any old data
     //Add from largest bit to smallest bit.
-    if (!LED0)
-    {
-        bin_val_sub += !LED0;
-        bin_val_sub << 1;
-    }
-	else
-	{
-		bin_val_sub << 1;
-	}
-    if (!LED1)
-    {
-        bin_val_sub += !LED1;
-        bin_val_sub << 1;
-    }
-	else
-	{
-		bin_val_sub << 1;
-	}
-    if (!LED2)
-    {
-        bin_val_sub += !LED2;
-        bin_val_sub << 1;
-    }
-	else
-	{
-		bin_val_sub << 1;
-	}
-    if (!LED3)
-    {
-        bin_val_sub += !LED3;
-        //bin_val_sub << 0; unnecessary.
-    }
+	if (!LED0) {bin_val_sub+= 8;}
+	if (!LED1) {bin_val_sub+= 4;}
+	if (!LED2) {bin_val_sub+= 2;}
+	if (!LED3) {bin_val_sub+= 1;}
     return bin_val_sub;
 }
