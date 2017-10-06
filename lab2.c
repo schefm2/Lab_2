@@ -376,10 +376,10 @@ void Bin_To_Hex(void)
         else
         {
             //check for ascii values 1-9
-            if(int(input)>90)
+            if(int(input)>64)
             {
                 //convert ascii of hex to decimal and compare to answer
-                if((input-91)== answer)
+                if((input-55== answer)
                 {
                     //turn LED green
                     BLED1 = 0;
@@ -400,7 +400,7 @@ void Bin_To_Hex(void)
             else
             {
                 //convert ascii of hex to decimal and compare to answer
-                if((input+9)== answer)
+                if((input-48)== answer)
                 {
                     num_right++;
                     //turn LED green
