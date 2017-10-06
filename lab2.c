@@ -1,4 +1,4 @@
-﻿/*  Names: Sydney Bahs, Tom Saad, Matthew Scheffer
+/*  Names: Sydney Bahs, Tom Saad, Matthew Scheffer
     Section: 2
     Date: 10/10/17
     File name: lab2.c
@@ -334,6 +334,7 @@ void Hex_To_Bin(void)
 //**********************************
 void Bin_To_Hex(void)
 {
+	/*
     for(unsigned char i=0; i<8; i++)
     {
         LED0 = 1; //off
@@ -429,6 +430,8 @@ void Bin_To_Hex(void)
     }
     printf("You've completed the game! Your score was %d: you answered %d out of 8 right.\r\n",
             score, num_right);
+
+	*/
 }
 
 //**********************************
@@ -437,26 +440,26 @@ void manipulateLEDs(void)
     if (!PB0)
     {
         sub_count = T0_overflows;
-        while(T0_overflows < sub_count + 20) { }
+        while(T0_overflows < sub_count + 40) { }
         //debounce, don't want to change LED 100 times...
         LED0 = !LED0;
     }
     if (!PB1)
     {
         sub_count = T0_overflows;
-        while(T0_overflows < sub_count + 20) { }
+        while(T0_overflows < sub_count + 40) { }
         LED1 = !LED1;
     }
     if (!PB2)
     {
         sub_count = T0_overflows;
-        while(T0_overflows < sub_count + 20) { }
+        while(T0_overflows < sub_count + 40) { }
         LED2 = !LED2;
     }
     if (!PB3)
     {
         sub_count = T0_overflows;
-        while(T0_overflows < sub_count + 20) { }
+        while(T0_overflows < sub_count + 40) { }
         LED3 = !LED3;
     }
 }
@@ -466,24 +469,36 @@ unsigned int enteredBinary(void)
 {
     bin_val_sub = 0; //clear any old data
     //Add from largest bit to smallest bit.
-    if (LED3)
+    if (!LED0)
     {
-        bin_val_sub += LED3;
-        bin_val_sub << 3;
-    }
-    if (LED2)
-    {
-        bin_val_sub += LED2;
-        bin_val_sub << 2;
-    }
-    if (LED1)
-    {
-        bin_val_sub += LED1;
+        bin_val_sub += !LED0;
         bin_val_sub << 1;
     }
-    if (LED0)
+	else
+	{
+		bin_val_sub << 1;
+	}
+    if (!LED1)
     {
-        bin_val_sub += LED0;
+        bin_val_sub += !LED1;
+        bin_val_sub << 1;
+    }
+	else
+	{
+		bin_val_sub << 1;
+	}
+    if (!LED2)
+    {
+        bin_val_sub += !LED2;
+        bin_val_sub << 1;
+    }
+	else
+	{
+		bin_val_sub << 1;
+	}
+    if (!LED3)
+    {
+        bin_val_sub += !LED3;
         //bin_val_sub << 0; unnecessary.
     }
     return bin_val_sub;
