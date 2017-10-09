@@ -48,6 +48,7 @@ void Hex_To_Bin(void);					//Runs game mode with button inputs
 void Bin_To_Hex(void);					//Runs game mode with terminal input
 void manipulateLEDs(void);              //Read player button pushes, light LEDs
 unsigned int enteredBinary(void);       //Calculates answer from pushbuttons/LEDs
+void startSequence(void);				//Sounds buzzers and lights LEDs for before set of rounds
 
 //Converts Analog Pot signal to Digital
 unsigned char read_AD_input(unsigned char pin_number);
@@ -86,6 +87,10 @@ unsigned char toConvert;        //the number we give player to convert
 unsigned char rounds;           //what round we're on
 unsigned char num_right;        //number of rounds correctly answered
 unsigned char bin_val_sub;      //number in binary submitted
+
+unsigned char input;
+unsigned char answer;
+unsigned int j;
 
 //**************
 void main(void)
@@ -345,9 +350,20 @@ void Hex_To_Bin(void)
 //**********************************
 void Bin_To_Hex(void)
 {
-	
-    for(unsigned char i=0; i<8; i++)
+	printf("\r\nConvert from Binary values to Hex!\r\n");
+    printf("The the LEDs will light up to display a binary value: lit LED = 1, unlit = 0.\r\n");
+    printf("Press the corresponding hex character on your keyboard to sumbit your answer\r\n");
+
+	rounds = 0; //clears rounds	
+
+	startSequence();
+
+    while(rounds<8)
     {
+		j=0; //clear counting variable for loop
+		toConvert=random(); //randomly selects number to convert
+		answer=toConvert; //save random number for later comparison
+		rounds++;
         LED0 = 1; //off
         LED1 = 1;
         LED2 = 1;
@@ -356,20 +372,16 @@ void Bin_To_Hex(void)
         BLED2 = 1;
         TR0 = 0;
         TMR0 = 0; //clear timer
-        SS2MEM = SS2; //store switch state
         T0_overflows = 0;
 
-        unsigned char input;
-        unsigned char randNum = random(); //get random number to display
-        unsigned char answer = randNum;
-        printf("Convert %x\r\n", randNum);
         num_right = 0;
-
+		
+		
         
-        for(unsigned char j=0; j<4; j++)
+        while(j<4)
         {
-
-            if((randNum%2)==1) //checks if last binary digit should be one
+			j++;
+            if((toConvert%2)==1) //checks if last binary digit should be one
             {
                 //if binaray digit being checked is one turn on corresponding LED
                 if(j==0){LED3=0;}
@@ -377,8 +389,9 @@ void Bin_To_Hex(void)
                 if(j==2){LED1=0;}
                 if(j==3){LED0=0;}
             }
-            randNum = randNum>>;
+            toConvert = toConvert>>1;
         }
+		j=0;
         TR0 = 1; //start timer
         input = getchar();
         TR0 = 0; //stop timer
@@ -387,17 +400,17 @@ void Bin_To_Hex(void)
         }
         else
         {
-            //check for ascii values 1-9
-            if(int(input)>64)
+            //check for ascii values of characters 1-9
+            if((int)input>64)
             {
                 //convert ascii of hex to decimal and compare to answer
-                if((input-55== answer)
+                if(((int)input-55)== answer)
                 {
                     //turn LED green
                     BLED1 = 0;
                     BLED2 = 1;
                     num_right++;
-                    score +=  10 – (10*T0_overflows)/wait_time;
+                    score +=  10-(10*T0_overflows)/wait_time;
 
                 }
                 else
@@ -408,17 +421,17 @@ void Bin_To_Hex(void)
                 }
             }
 
-            //check for ascii values A-E
+            //check for ascii values of characters A-E
             else
             {
                 //convert ascii of hex to decimal and compare to answer
-                if((input-48)== answer)
+                if(((int)input-48)== answer)
                 {
                     num_right++;
                     //turn LED green
                     BLED1=0;
                     BLED2=1;
-                    score +=  10 – (10*T0_overflows)/wait_time;
+                    score +=  10 - (10*T0_overflows)/wait_time;
                 }
                 else
                 {
@@ -442,6 +455,7 @@ void Bin_To_Hex(void)
     printf("You've completed the game! Your score was %d: you answered %d out of 8 right.\r\n",
             score, num_right);
     
+	//sound buzzer
     BUZZ=0;
     TR0 = 1;
     while (T0_overflows < 169) { }
@@ -489,4 +503,47 @@ unsigned int enteredBinary(void)
 	if (!LED2) {bin_val_sub+= 2;}
 	if (!LED3) {bin_val_sub+= 1;}
     return bin_val_sub;
+}
+
+void startSequence(void)
+{
+	TMR0 = 0; //clear timer
+    T0_overflows = 0;
+
+	BUZZ=0;
+	LED0=0;
+   	TR0 = 1;
+	while (T0_overflows < 169) { }
+	LED0=1;
+    BUZZ=1;
+	while (T0_overflows < 254) { }
+	LED1 = 0;
+	BUZZ=0;
+	TR0=0;
+
+	TMR0 = 0; //clear timer
+    T0_overflows = 0;
+
+	TR0=1;
+	while (T0_overflows < 169) { }
+	LED1 = 1;
+	BUZZ=1;
+	while (T0_overflows < 254) { }
+	LED2 = 0;
+	BUZZ=0;
+	TR0=0;
+
+	TMR0 = 0; //clear timer
+    T0_overflows = 0;
+	
+	TR0=1;
+	while (T0_overflows < 169) { }
+	LED2 = 1;
+	BUZZ=1;
+	while (T0_overflows < 254) { }
+	LED3 = 0;
+	TR0=0;
+
+	TMR0 = 0; //clear timer
+    T0_overflows = 0;
 }
