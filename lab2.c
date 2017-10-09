@@ -305,7 +305,6 @@ void Hex_To_Bin(void)
             }
         }
         TR0 = 0; //pause
-        score += T0_overflows;
 
         //since all vars are global, don't need to assign...
         enteredBinary();
@@ -322,6 +321,7 @@ void Hex_To_Bin(void)
             BLED2 = 1;
 
             ++num_right;
+			score +=  10-(10*T0_overflows)/wait_time;
         }
 
         else
@@ -330,9 +330,6 @@ void Hex_To_Bin(void)
             //red
             BLED1 = 1;
             BLED2 = 0;
-
-            //add penalized score
-            score += 2 * wait_time;
         }
 
         //some time before next round starts
