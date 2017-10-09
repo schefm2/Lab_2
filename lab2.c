@@ -400,6 +400,8 @@ void Bin_To_Hex(void)
         }
         else
         {
+			printf("\r\n");
+
             //check for ascii values of characters 1-9
             if((int)input>86)
             {
@@ -452,7 +454,7 @@ void Bin_To_Hex(void)
         BLED1=1;
         BLED2=1;
     }
-    printf("You've completed the game! Your score was %d: you answered %d out of 8 right.\r\n",
+    printf("\r\nYou've completed the game! Your score was %d: you answered %d out of 8 right.\r\n\r\n",
             score, num_right);
     
 	//sound buzzer
