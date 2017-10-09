@@ -260,6 +260,14 @@ void Hex_To_Bin(void)
     num_right = 0;
     rounds = 0;
 
+	BUZZ = 0;
+	T0_overflows = 0;
+	TMR0 = 0;
+	TR0 = 1;
+	while (T0_overflows < 169) {}
+	TR0 = 0;
+	BUZZ = 1;
+
     while (rounds++ < 8) //increments round after reading
     {
         //Round setup: 
