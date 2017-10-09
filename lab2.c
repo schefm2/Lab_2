@@ -507,43 +507,50 @@ unsigned int enteredBinary(void)
 
 void startSequence(void)
 {
-	TMR0 = 0; //clear timer
+    TMR0 = 0; //clear timer
     T0_overflows = 0;
 
-	BUZZ=0;
-	LED0=0;
-   	TR0 = 1;
-	while (T0_overflows < 169) { }
-	LED0=1;
+    BUZZ=0;
+    LED3=0;
+    TR0 = 1;
+    while (T0_overflows < 169) { }
+    LED3=1;
     BUZZ=1;
-	while (T0_overflows < 254) { }
-	LED1 = 0;
-	BUZZ=0;
-	TR0=0;
+    while (T0_overflows < 254) { }
+    LED2 = 0;
+    BUZZ=0;
+    TR0=0;
 
-	TMR0 = 0; //clear timer
+    TMR0 = 0; //clear timer
     T0_overflows = 0;
 
-	TR0=1;
-	while (T0_overflows < 169) { }
-	LED1 = 1;
-	BUZZ=1;
-	while (T0_overflows < 254) { }
-	LED2 = 0;
-	BUZZ=0;
-	TR0=0;
+    TR0=1;
+    while (T0_overflows < 169) { }
+    LED2 = 1;
+    BUZZ=1;
+    while (T0_overflows < 254) { }
+    LED1 = 0;
+    BUZZ=0;
+    TR0=0;
 
-	TMR0 = 0; //clear timer
+    TMR0 = 0; //clear timer
     T0_overflows = 0;
-	
-	TR0=1;
-	while (T0_overflows < 169) { }
-	LED2 = 1;
-	BUZZ=1;
-	while (T0_overflows < 254) { }
-	LED3 = 0;
-	TR0=0;
+    
+    TR0=1;
+    while (T0_overflows < 169) { }
+    LED1 = 1;
+    BUZZ=1;
+    while (T0_overflows < 254) { }
+    LED0 = 0;
+    TR0=0;
 
-	TMR0 = 0; //clear timer
+    TMR0 = 0; //clear timer
+    T0_overflows = 0;
+
+    TR0=1;
+    while (T0_overflows < 169) { }
+
+    TMR0 = 0; //clear timer
     T0_overflows = 0;
 }
+
