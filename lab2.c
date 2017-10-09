@@ -265,6 +265,8 @@ void Hex_To_Bin(void)
     num_right = 0;
     rounds = 0;
 
+    startSequence();
+
 	BUZZ = 0;
 	T0_overflows = 0;
 	TMR0 = 0;
@@ -548,6 +550,8 @@ void startSequence(void)
 
     TR0=1;
     while (T0_overflows < 169) { }
+    TR0=0
+    LED0=1;
 
     TMR0 = 0; //clear timer
     T0_overflows = 0;
