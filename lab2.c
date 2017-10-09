@@ -186,7 +186,7 @@ void Game_Start(void)
     printf("To select the Bin to Hex game mode, move the leftmost slide switch to the left.\r\n");
     printf("To select the Hex to Bin game mode, move the leftmost slide switch to the right.\r\n");
     printf("Rotate the blue potentiometer clockwise to speed up the wait time for a game round.\r\n");
-    printf("When you are ready to start the game, flip the slideswitch on the right.\r\n");
+    printf("When you are ready to start the game, flip the slideswitch on the right.\r\n\r\n");
 
     SS2MEM = SS2;			//Stores position of enter slideswitch
     while (SS2 == SS2MEM);	//Waits until the enter slideswitch is flipped to start the game
@@ -201,7 +201,7 @@ void Mode_Select(void)
        overflow of our Timer0 last ~2.96 ms, this
        means we need overflow values from 168.75
        to 1687.5, or 169 to 1688 approximately.
-       AD_Convert is turned into a percentage. At
+       read_AD_input is turned into a percentage. At
        100 percent, wait_time will be 1519 + 169 = 1688,
        and at 0 percent wait_time will be 0 + 169 = 169. 
      */
@@ -246,11 +246,11 @@ unsigned char random(void)
 //**********************************
 unsigned char read_AD_input(unsigned char pin_number)
 {
-    AMX1SL = pin_number;
+    AMX1SL = pin_number;		//Sets multiplexer to convert correct pin
     ADC1CN &= ~0x20;			//Clears the A/D conversion complete bit
     ADC1CN |= 0x10;				//Starts A/D conversion
     while(!(ADC1CN & 0x20));	//Waits until conversion completes 
-    return ADC1;
+    return ADC1;				//returns converted input, 0-255 inclusive
 }
 
 //**********************************
@@ -258,7 +258,7 @@ void Hex_To_Bin(void)
 {
     printf("\r\nConvert from Hex values to Binary!\r\n");
     printf("Use the push buttons to light up the LEDs; lit LED = 1, unlit = 0.\r\n");
-    printf("When ready, flip the enter switch!\r\n");
+    printf("When ready, flip the enter switch!\r\n\r\n");
 
     //Init some vars
     score = 0;
@@ -269,15 +269,15 @@ void Hex_To_Bin(void)
     {
         //Round setup: 
         // turn off LEDs, BiLED, clear timer, store switch state
-        LED0 = 1; //off
+        LED0 = 1;		//off
         LED1 = 1;
         LED2 = 1;
         LED3 = 1;
-        BLED1 = 1; //both sides powered == off
+        BLED1 = 1;		//both sides powered == off
         BLED2 = 1;
-		TR0 = 0;	//pause timer
-        TMR0 = 0; //clear timer
-        SS2MEM = SS2; //store switch state
+		TR0 = 0;		//pause timer
+        TMR0 = 0; 		//clear timer
+        SS2MEM = SS2;	//store switch state
         T0_overflows = 0;
 
         toConvert = random(); //generate random number
