@@ -342,7 +342,7 @@ void Hex_To_Bin(void)
         TR0 = 0;
     }
 
-    printf("You've completed the game! Your score was %d: you answered %d out of 8 right.\r\n",
+    printf("\r\nYou've completed the game! Your score was %d: you answered %d out of 8 right.\r\n\r\n",
             score, num_right);
 
 }
@@ -355,6 +355,7 @@ void Bin_To_Hex(void)
     printf("Press the corresponding hex character on your keyboard to sumbit your answer\r\n");
 
 	rounds = 0; //clears rounds	
+	num_right = 0;
 
 	startSequence();
 
@@ -373,14 +374,11 @@ void Bin_To_Hex(void)
         TR0 = 0;
         TMR0 = 0; //clear timer
         T0_overflows = 0;
-
-        num_right = 0;
 		
 		
         
         while(j<4)
         {
-			j++;
             if((toConvert%2)==1) //checks if last binary digit should be one
             {
                 //if binaray digit being checked is one turn on corresponding LED
@@ -389,7 +387,8 @@ void Bin_To_Hex(void)
                 if(j==2){LED1=0;}
                 if(j==3){LED0=0;}
             }
-            toConvert = toConvert>>1;
+            toConvert /= 2;
+			j++;
         }
 		j=0;
         TR0 = 1; //start timer
@@ -397,14 +396,15 @@ void Bin_To_Hex(void)
         TR0 = 0; //stop timer
         if(T0_overflows>wait_time)
         {
+			printf("You took too long, no points awarded.\r\n");
         }
         else
         {
             //check for ascii values of characters 1-9
-            if((int)input>64)
+            if((int)input>86)
             {
                 //convert ascii of hex to decimal and compare to answer
-                if(((int)input-55)== answer)
+                if(((int)input-87)== answer)
                 {
                     //turn LED green
                     BLED1 = 0;
