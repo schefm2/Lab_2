@@ -42,6 +42,7 @@ void Timer0_ISR(void) __interrupt 1;	//Increments T0_overflows
 void Game_Start(void);					//Opening print statements and instructions
 void Mode_Select(void);					//Selects which game mode is to be played,
 										//And sets game speed
+void End_Game(void);					//Compares Player 1 and Player 2 scores
 void The_Seeder(void);					//Generates a pseudorandom seed for rand()
 unsigned char random(void);				//Generates a random integer 0-15
 void Hex_To_Bin(void);					//Runs game mode with button inputs
@@ -79,6 +80,7 @@ float wait_converter;	//Allows wait_time to function properly
 unsigned int T0_overflows;      //Timer 0 overflow count
 unsigned int sub_count;         //used to refer to time started, like in debouncing
 unsigned int score;             //score for the game
+unsigned int scoreMEM;			//Keeps track of previous score for competition
 unsigned int wait_time;         //time between questions, determined by A/DC
 
 unsigned char SS1MEM;           //state of slide switch 1
@@ -208,16 +210,56 @@ void Mode_Select(void)
     wait_converter = ((float)read_AD_input(1) / 255) * 1519 + 169;
 	wait_time = wait_converter;
 
-    if(SS1)
+    if(SS1 && PB0)
     {
         //Runs Hex to Bin game mode
         Hex_To_Bin();
     }
+	else if (SS1 && !PB0)
+	{
+		//Runs Competitive mode
+		Hex_To_Bin();
+		scoreMEM = score;
+		SS2MEM = SS2;
+		printf("\r\nWhen player 2 is ready, flick the rightmost switch\r\n");
+		while (SS2MEM == SS2) {}
+		Hex_To_Bin();
+		End_Game();
+	}
+	else if (!SS1 && !PB0)
+	{
+		//Runs Competitive mode
+		Bin_To_Hex();
+		scoreMEM = score;
+		SS2MEM = SS2;
+		printf("\r\nWhen player 2 is ready, flick the rightmost switch\r\n");
+		while (SS2MEM == SS2) {}
+		Bin_To_Hex();
+		End_Game();
+	}
     else
     {
         //Runs Bin to Hex game mode
         Bin_To_Hex();
     }
+}
+
+//**********************************
+void End_Game(void)
+{
+	printf("\r\n\r\nYou have finished competitive mode! Player 1 had a score of: %d\r\nPlayer 2 had a score of: %d\r\n\r\n", scoreMEM, score );
+	if (scoreMEM > score)
+	{
+		printf("Player 1 wins!\r\n");
+	}
+	else if (scoreMEM < score)
+	{
+		printf("Player 2 wins!\r\n");
+	}
+	else
+	{
+		printf("No contest!\r\n");
+	}
 }
 
 //**********************************
@@ -355,6 +397,7 @@ void Bin_To_Hex(void)
 
 	rounds = 0; //clears rounds	
 	num_right = 0;
+	score = 0;
 
 	startSequence();
 
