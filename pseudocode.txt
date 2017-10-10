@@ -26,6 +26,8 @@ function prototypes
 	unsigned int enteredBinary(void);
 	void startSequence(void);
 	unsigned char read_AD_input(unsigned char pin_number);
+	unsigned int answeredCorrect(void);
+	unsigned int answeredIncorrect(void);
 	unsigned int calcScore(void);
 
 main function
@@ -130,7 +132,39 @@ Functions
 	End read_AD_input
 	
 	Hex_To_Bin
-		
+        display instructions
+        initialize used variables to 0
+        play flashy start sequence
+
+        For 8 rounds
+            turn off all LED, buzzer, pause timer
+            store switch state, clear overflow counter, clear timer bits
+
+            generate a random number for the round
+            print "Convert %x", number
+
+            start timer
+            while there is time left
+                let the player manipulate LEDs to put in their answer
+                if the right slide switch changed, they submitted
+                    break
+
+            pause timer
+
+            call enteredBinary //determine answer submitted
+            if answer correct
+                BiLED = green
+                call answeredCorrect for score
+            else
+                BiLED = red
+                call answeredIncorrect for score
+
+            wait before starting next round
+        
+        calculate score with calcScore
+
+        print results: ("score %d, right answers $d", score, num_right)
+
 	End Hex_To_Bin
 	
 	Bin_To_Hex
@@ -181,27 +215,23 @@ Functions
 	End manipulateLEDs
 	
 	enteredBinary
-		clear binary variable
-
-		(makes last digit one if led0 is on)
-		if led0 is on 
-		increment the binary variable by 1
-		bit shift to the left
-
-		(makes second to last digit one if led1 is on)
-		if led1 is on 
-		increment the binary variable by 1
-		bit shift to the left
-
-		(makes second digit one if led2 is on)
-		if led2 is on 
-		increment the binary variable by 1
-		bit shift to the left
-
-		(makes first digit one is led3 is on)
-		if led3 is on 
-		increment the binary variable by 1
-		bit shift to the left
+        clear old data
+		//makes first digit one if led0 is on
+        if (LED0 is on)
+            increment data
+        left-shift data
+		//makes second digit one if led1 is on
+        if (LED1 is on)
+            increment data
+        left-shift data
+		//makes third digit one if led2 is on
+        if (LED2 is on)
+            increment data
+        left-shift data
+		//makes fourth digit one if led3 is on
+        if (LED3 is on)
+            increment data
+        return data
 	End enteredBinary
 	
 	startSequence
@@ -218,6 +248,18 @@ Functions
     	clear timer
 	End startSequence
 	
+    answeredCorrect
+        add time taken for this question to total_time
+        return total_time
+    End answeredCorrect
+
+    answeredIncorrect
+        add time taken for this question to total_time
+        add penalty for wrong answer: 3*wait_time
+        return total_time
+    End answeredIncorrect
+
 	calcScore
-		
+		calculate score = pseudo-arbitrary large number / total_time
+        return score
 	End calcScore
