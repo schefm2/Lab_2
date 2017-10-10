@@ -132,6 +132,13 @@ Functions
 	End read_AD_input
 	
 	Hex_To_Bin
+        display instructions
+        initialize used variables to 0
+        play flashy start sequence
+
+        For 8 rounds
+            turn off all LED, buzzer, pause timer
+            
 		
 	End Hex_To_Bin
 	
@@ -165,27 +172,55 @@ Functions
 	End Bin_To_Hex
 	
 	manipulateLEDs
-		
+	if pushbutton zero is pushed
+		wait 60 overflows to debounce
+		toggle led
+
+	if pushbutton one is pushed
+		wait 60 overflows to debounce
+		toggle led
+
+	if pushbutton two is pushed
+		wait 60 overflows to debounce
+		toggle led
+
+	if pushbutton three is pushed
+		wait 60 overflows to debounce
+		toggle led
 	End manipulateLEDs
 	
 	enteredBinary
         clear old data
+		//makes first digit one if led0 is on
         if (LED0 is on)
             increment data
         left-shift data
+		//makes second digit one if led1 is on
         if (LED1 is on)
             increment data
         left-shift data
+		//makes third digit one if led2 is on
         if (LED2 is on)
             increment data
         left-shift data
+		//makes fourth digit one if led3 is on
         if (LED3 is on)
             increment data
         return data
 	End enteredBinary
 	
 	startSequence
-		
+		clear timer
+    	sound buzzer and light red led for .5 seconds
+    	wait a quarter second
+    	clear timer
+    	sound buzzer and light orange led for .5 seconds
+    	wait a quarter second
+    	clear timer
+    	sound buzzer and light yellow led for .5 seconds
+    	wait a quarter second
+    	light green led for .5 seconds
+    	clear timer
 	End startSequence
 	
     answeredCorrect

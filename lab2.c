@@ -22,8 +22,11 @@
     1. We added an extra LED and pushbutton. This means the values the player is
     asked to convert actually get past 7, which means they get to actually
     interact with hex, not just binary and decimal.
-    2. We also have a score calculation based on time taken to answer.
-    3. A competitive game mode has been added, where two players start a game
+    2. We also have a score calculation based on time taken to answer and penalties
+    for incorrect answers.
+    3. A competitive game mode has been added, where two players start a game and
+    compete for the better score.
+    4. There's a flashy start sequence before each game begins.
 
 */
 
