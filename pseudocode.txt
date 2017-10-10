@@ -13,14 +13,15 @@ Binary to Hex Function
 		Clear the timer overflow_count value
 		Wait for a keyboard press [input = getchar()]
 		Save the overflow_count value
-If the key matches the random number, BLED is green, otherwise it is red
-Calculate the point score based on the following example:
-If overflow_count > wait_time then points = 0
-Otherwise points = 10 – (10 * overflow_count)/wait_time
-Ex) wait_time = 1000, overflow_count = 650, points = 10 – (10 * 650)/1000 = 4
-(Integer arithmetic truncates 6.5 to 6 so total is 4.)
-Display the points for the try and total score on the terminal
-Delay for 0.5 second
-Turn off the BLED
-End of the 8 tries loop
+		
+		convert character to int then convert ascii to decimal
+		If the key matches the random number, BLED is green, otherwise it is red
+
+		run calculate score function
+........Display the points for the try and total score on the terminal
+
+		Delay for 0.5 second
+		Turn off the BLED
+	End of the 8 tries loop
+
 Display the final score and sound the buzzer for ~0.5 second
