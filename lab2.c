@@ -57,8 +57,10 @@ void startSequence(void);				//Sounds buzzers and lights LEDs for before set of 
 
 
 unsigned int answeredCorrect(void);     //Increment stuff for correct answer
+/*
 unsigned int answeredIncorrect(void);   //Increment stuff for incorrect answer
 unsigned int calcScore(void);           //Calculate total score at end
+*/
 
 //Converts Analog Pot signal to Digital
 unsigned char read_AD_input(unsigned char pin_number);
@@ -388,7 +390,7 @@ void Hex_To_Bin(void)
             BLED1 = 1;
             BLED2 = 0;
 
-            answeredIncorrect();
+            //answeredIncorrect();
         }
 
         //some time before next round starts
@@ -398,7 +400,7 @@ void Hex_To_Bin(void)
         TR0 = 0;
     }
 
-    calcScore();
+    //calcScore();
 
     printf("\r\nYou've completed the game! Your score was %d: you answered %d out of 8 right.\r\n\r\n",
             score, num_right);
@@ -484,7 +486,7 @@ void Bin_To_Hex(void)
                     BLED1 = 1;
                     BLED2 = 0;
 
-                    answeredIncorrect();
+                    //answeredIncorrect();
                 }
             }
 
@@ -507,7 +509,7 @@ void Bin_To_Hex(void)
                     BLED1 = 1;
                     BLED2 = 0;
 
-                    answeredIncorrect();
+                    //answeredIncorrect();
                 }
             }
         }
@@ -523,7 +525,7 @@ void Bin_To_Hex(void)
         BLED2=1;
     }
 
-    calcScore();
+    //calcScore();
 
     printf("\r\nYou've completed the game! Your score was %d: you answered %d out of 8 right.\r\n\r\n",
             score, num_right);
@@ -658,6 +660,7 @@ unsigned int answeredCorrect(void)
     return score;
 }
 
+/*
 unsigned int answeredIncorrect(void)
 {
     //penalize wrong answers - taking less time for wrong answers won't benefit your score.
