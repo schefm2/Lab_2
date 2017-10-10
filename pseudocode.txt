@@ -1,26 +1,77 @@
-Binary to Hex Function
-	Display brief instructions
-	Zero the game score and round number
-	Turn off all the LEDs and run start sequence function
+compiler directives
+	#include <c8051_SDCC.h>
+	#include <stdio.h>
 
-	For 8 rounds
-		Generate a random number from 0 to 15
-		for digits in binary check if last digit is 1
-			If bit 0 of the random number is 1, LED0 is lit
-			If bit 1 of the random number is 1, LED1 is lit
-			If bit 2 of the random number is 1, LED2 is lit
-			divide number to convert by two so checking last digit is valid
-		Clear the timer overflow_count value
-		Wait for a keyboard press [input = getchar()]
-		Save the overflow_count value
-If the key matches the random number, BLED is green, otherwise it is red
-Calculate the point score based on the following example:
-If overflow_count > wait_time then points = 0
-Otherwise points = 10 – (10 * overflow_count)/wait_time
-Ex) wait_time = 1000, overflow_count = 650, points = 10 – (10 * 650)/1000 = 4
-(Integer arithmetic truncates 6.5 to 6 so total is 4.)
-Display the points for the try and total score on the terminal
-Delay for 0.5 second
-Turn off the BLED
-End of the 8 tries loop
-Display the final score and sound the buzzer for ~0.5 second
+declare global variables
+	sbit SS1, SS2, PB0, PB1, PB2, PB3, LED0, LED1, LED2, LED3, BLED1, BLED2, BUZZ
+	unsigned char SS1MEM, SS2MEM, toConvert, rounds, num_right, bin_val_sub, input, answer
+	unsigned int T0_overflows, sub_count, score, scoreMEM, wait_time, j
+	float wait_converter
+
+function prototypes
+	void Port_Init(void);
+	void Timer_Init(void);
+	void Interrupt_Init();
+	void ADC_Init();
+	void Timer0_ISR(void) __interrupt 1;
+
+	void Game_Start(void);
+	void Mode_Select(void);
+	void End_Game(void);
+	void The_Seeder(void);
+	unsigned char random(void);
+	void Hex_To_Bin(void);
+	void Bin_To_Hex(void);
+	void manipulateLEDs(void);
+	unsigned int enteredBinary(void);
+	void startSequence(void);
+
+main function
+	declare local variables
+		(NONE)
+	initialization functions
+		Sys_Init();
+		Port_Init();
+		Interrupt_Init();
+		Timer_Init();
+		ADC_Init();
+		putchar(' ');
+		
+	Seed rand()
+	Begin infinite loop
+		Game_Start();
+		Mode_Select();
+	End infinite loop
+End main function
+
+
+
+
+Functions
+
+	Binary to Hex Function
+		Display brief instructions
+		Zero the game score and round number
+		Turn off all the LEDs and run start sequence function
+
+		For 8 rounds
+			Generate a random number from 0 to 15
+			for digits in binary check if last digit is 1
+				If bit 0 of the random number is 1, LED0 is lit
+				If bit 1 of the random number is 1, LED1 is lit
+				If bit 2 of the random number is 1, LED2 is lit
+				divide number to convert by two so checking last digit is valid
+			Clear the timer overflow_count value
+			Wait for a keyboard press [input = getchar()]
+			Save the overflow_count value
+			If the key matches the random number, BLED is green, otherwise it is red
+			Calculate the point score based on the following example:
+			If overflow_count > wait_time then points = 0
+			Otherwise points = 10 – (10 * overflow_count)/wait_time
+			Ex) wait_time = 1000, overflow_count = 650, points = 10 – (10 * 650)/1000 = 4
+			(Integer arithmetic truncates 6.5 to 6 so total is 4.)
+			Display the points for the try and total score on the terminal
+			Delay for 0.5 second
+			Turn off the BLED
+		End of the 8 tries loop
+		Display the final score and sound the buzzer for ~0.5 second
