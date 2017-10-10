@@ -530,7 +530,7 @@ void Bin_To_Hex(void)
         BLED1=1;
         BLED2=1;
     }
-
+	
     printf("\r\nYou've completed the game! Your score was %d: you answered %d out of 8 right.\r\n\r\n",
             score, num_right);
     
@@ -657,6 +657,7 @@ void startSequence(void)
 
 unsigned int answeredCorrect(void)
 {
+
     ++num_right;
     score+= 10-(10*T0_overflows/wait_time);
     return score;
