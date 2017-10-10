@@ -163,7 +163,21 @@ Functions
 	End Bin_To_Hex
 	
 	manipulateLEDs
-		
+	if pushbutton zero is pushed
+		wait 60 overflows to debounce
+		toggle led
+
+	if pushbutton zero is pushed
+		wait 60 overflows to debounce
+		toggle led
+
+	if pushbutton zero is pushed
+		wait 60 overflows to debounce
+		toggle led
+
+	if pushbutton zero is pushed
+		wait 60 overflows to debounce
+		toggle led
 	End manipulateLEDs
 	
 	enteredBinary
@@ -171,7 +185,17 @@ Functions
 	End enteredBinary
 	
 	startSequence
-		
+		clear timer
+    	sound buzzer and light red led for .5 seconds
+    	wait a quarter second
+    	clear timer
+    	sound buzzer and light orange led for .5 seconds
+    	wait a quarter second
+    	clear timer
+    	sound buzzer and light yellow led for .5 seconds
+    	wait a quarter second
+    	light green led for .5 seconds
+    	clear timer
 	End startSequence
 	
 	calcScore
