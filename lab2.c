@@ -209,6 +209,7 @@ void Mode_Select(void)
      */
     wait_converter = ((float)read_AD_input(1) / 255) * 1519 + 169;
 	wait_time = wait_converter;
+	printf("Your wait time is: %d\r\n\r\n", wait_time);
 
     if(SS1 && PB0)
     {
@@ -219,23 +220,23 @@ void Mode_Select(void)
 	{
 		//Runs Competitive mode
 		Hex_To_Bin();
-		scoreMEM = score;
-		SS2MEM = SS2;
+		scoreMEM = score;			//Stores score of player 1
+		SS2MEM = SS2;				//Stores SS2 state in memory
 		printf("\r\nWhen player 2 is ready, flick the rightmost switch\r\n");
-		while (SS2MEM == SS2) {}
+		while (SS2MEM == SS2) {}	//Waits until rightmost switch is flicked
 		Hex_To_Bin();
-		End_Game();
+		End_Game();					//Print endgame results
 	}
 	else if (!SS1 && !PB0)
 	{
 		//Runs Competitive mode
 		Bin_To_Hex();
-		scoreMEM = score;
-		SS2MEM = SS2;
+		scoreMEM = score;			//Stores score of player 1
+		SS2MEM = SS2;				//Stores SS2 state in memory
 		printf("\r\nWhen player 2 is ready, flick the rightmost switch\r\n");
-		while (SS2MEM == SS2) {}
+		while (SS2MEM == SS2) {}	//Waits until rightmost switch is flicked
 		Bin_To_Hex();
-		End_Game();
+		End_Game();					//Print endgame results
 	}
     else
     {
@@ -247,18 +248,18 @@ void Mode_Select(void)
 //**********************************
 void End_Game(void)
 {
-	printf("\r\n\r\nYou have finished competitive mode! Player 1 had a score of: %d\r\nPlayer 2 had a score of: %d\r\n\r\n", scoreMEM, score );
+	printf("\r\n\r\nYou have finished competitive mode! Player 1 had a score of: %d\r\nPlayer 2 had a score of: %d\r\n", scoreMEM, score );
 	if (scoreMEM > score)
 	{
-		printf("Player 1 wins!\r\n");
+		printf("Player 1 wins!\r\n\r\n");
 	}
 	else if (scoreMEM < score)
 	{
-		printf("Player 2 wins!\r\n");
+		printf("Player 2 wins!\r\n\r\n");
 	}
 	else
 	{
-		printf("No contest!\r\n");
+		printf("No contest!\r\n\r\n");
 	}
 }
 
@@ -394,7 +395,7 @@ void Bin_To_Hex(void)
     //print mode instructions
 	printf("\r\nConvert from Binary values to Hex!\r\n");
     printf("The the LEDs will light up to display a binary value: lit LED = 1, unlit = 0.\r\n");
-    printf("Press the corresponding hex character on your keyboard to sumbit your answer\r\n");
+    printf("Press the corresponding hex character on your keyboard to sumbit your answer. No capital letters!\r\n");
 
 	rounds = 0; //clears rounds	
 	num_right = 0;
@@ -546,10 +547,10 @@ unsigned int enteredBinary(void)
 {
     bin_val_sub = 0; //clear any old data
     //Add from largest bit to smallest bit.
-	if (!LED0) {bin_val_sub+= 8;}
-	if (!LED1) {bin_val_sub+= 4;}
-	if (!LED2) {bin_val_sub+= 2;}
-	if (!LED3) {bin_val_sub+= 1;}
+	if (!LED0) {bin_val_sub += 8;}
+	if (!LED1) {bin_val_sub += 4;}
+	if (!LED2) {bin_val_sub += 2;}
+	if (!LED3) {bin_val_sub += 1;}
     return bin_val_sub;
 }
 
@@ -605,7 +606,7 @@ void startSequence(void)
 
     TR0=1;
     while (T0_overflows < 169) { }
-    TR0=0
+    TR0=0;
     LED0=1;
 
     TMR0 = 0; //clear timer
