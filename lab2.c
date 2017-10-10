@@ -22,11 +22,9 @@
     1. We added an extra LED and pushbutton. This means the values the player is
     asked to convert actually get past 7, which means they get to actually
     interact with hex, not just binary and decimal.
-    2. We also have a score calculation based on time taken to answer and penalties
-    for incorrect answers.
-    3. A competitive game mode has been added, where two players start a game and
+    2. A competitive game mode has been added, where two players start a game and
     compete for the better score.
-    4. There's a flashy start sequence before each game begins.
+    3. There's a flashy start sequence before each game begins.
 
 */
 
@@ -57,8 +55,6 @@ void startSequence(void);				//Sounds buzzers and lights LEDs for before set of 
 
 
 unsigned int answeredCorrect(void);     //Increment stuff for correct answer
-unsigned int answeredIncorrect(void);   //Increment stuff for incorrect answer
-unsigned int calcScore(void);           //Calculate total score at end
 
 //Converts Analog Pot signal to Digital
 unsigned char read_AD_input(unsigned char pin_number);
@@ -89,7 +85,6 @@ float wait_converter;	//Allows wait_time to function properly
 unsigned int T0_overflows;      //Timer 0 overflow count
 unsigned int sub_count;         //used to refer to time started, like in debouncing
 unsigned int score;             //score for the game
-unsigned int total_time;        //total time taken to answer all questions, used for score
 unsigned int scoreMEM;			//Keeps track of previous score for competition
 unsigned int wait_time;         //time between questions, determined by A/DC
 
@@ -232,6 +227,16 @@ void Mode_Select(void)
 		Hex_To_Bin();
 		scoreMEM = score;			//Stores score of player 1
 		SS2MEM = SS2;				//Stores SS2 state in memory
+
+    	//Sets all LEDs, BLED, and BUZZ off
+    	LED0 = 1;
+    	LED1 = 1;
+    	LED2 = 1;
+    	LED3 = 1;
+    	BLED1 = 1;
+    	BLED2 = 1;
+    	BUZZ = 1;
+
 		printf("\r\nWhen player 2 is ready, flick the rightmost switch\r\n");
 		while (SS2MEM == SS2) {}	//Waits until rightmost switch is flicked
 		Hex_To_Bin();
@@ -243,6 +248,16 @@ void Mode_Select(void)
 		Bin_To_Hex();
 		scoreMEM = score;			//Stores score of player 1
 		SS2MEM = SS2;				//Stores SS2 state in memory
+
+		//Sets all LEDs, BLED, and BUZZ off
+    	LED0 = 1;
+    	LED1 = 1;
+    	LED2 = 1;
+    	LED3 = 1;
+    	BLED1 = 1;
+    	BLED2 = 1;
+    	BUZZ = 1;
+
 		printf("\r\nWhen player 2 is ready, flick the rightmost switch\r\n");
 		while (SS2MEM == SS2) {}	//Waits until rightmost switch is flicked
 		Bin_To_Hex();
@@ -293,7 +308,7 @@ void The_Seeder(void)
 unsigned char random(void)
 {
     //Returns a random char 0 to 15 inclusive
-    return (rand() % 15);
+    return (rand() % 16);
 }
 
 //**********************************
@@ -319,7 +334,6 @@ void Hex_To_Bin(void)
     rounds = 0;
 	T0_overflows = 0;
 	TMR0 = 0;
-    total_time = 0;
 
     startSequence();
 
@@ -387,9 +401,9 @@ void Hex_To_Bin(void)
             //red
             BLED1 = 1;
             BLED2 = 0;
-
-            answeredIncorrect();
         }
+		
+		printf("Your score is currently: %d\r\n", score);
 
         //some time before next round starts
         sub_count = T0_overflows;
@@ -397,8 +411,6 @@ void Hex_To_Bin(void)
         while (T0_overflows < sub_count + 675) { }
         TR0 = 0;
     }
-
-    calcScore();
 
     printf("\r\nYou've completed the game! Your score was %d: you answered %d out of 8 right.\r\n\r\n",
             score, num_right);
@@ -483,8 +495,6 @@ void Bin_To_Hex(void)
                    //turn LED red
                     BLED1 = 1;
                     BLED2 = 0;
-
-                    answeredIncorrect();
                 }
             }
 
@@ -498,7 +508,6 @@ void Bin_To_Hex(void)
                     BLED1=0;
                     BLED2=1;
 
-                    //score +=  10 - (10*T0_overflows)/wait_time;
                     answeredCorrect();
                 }
                 else
@@ -506,12 +515,10 @@ void Bin_To_Hex(void)
                     //turn LED red
                     BLED1 = 1;
                     BLED2 = 0;
-
-                    answeredIncorrect();
                 }
             }
         }
-		printf("Your score is currently: %d\r\n", calcScore());
+		printf("Your score is currently: %d\r\n", score);
 		
         //some time before next round starts
         TMR0 = 0; //clear timer
@@ -523,8 +530,6 @@ void Bin_To_Hex(void)
         BLED1=1;
         BLED2=1;
     }
-
-    calcScore();
 
     printf("\r\nYou've completed the game! Your score was %d: you answered %d out of 8 right.\r\n\r\n",
             score, num_right);
@@ -652,28 +657,7 @@ void startSequence(void)
 
 unsigned int answeredCorrect(void)
 {
-    //++num_right;
-    //total_time += T0_overflows;
-    score+= 10-(10*T0_overflows/wait_time)
-    //return total_time;
-    return score;
-}
-
-unsigned int answeredIncorrect(void)
-{
-    //penalize wrong answers - taking less time for wrong answers won't benefit your score.
-    //total_time += 3*wait_time + T0_overflows;
-    return total_time;
-}
-
-unsigned int calcScore(void)
-{
-    //8 rounds * 1690 max time per round.
-    //max time / time taken
-    //score = 135200000 / total_time; //between 1700 and 19000 ish?
-    // The benefit of having the large numerator is that close scores are easier to distinguish.
-    // No one should really be able to get a time so fast that it overflows score...
-    //score = 13520000 / total_time; //between 170 and 1900 ish?
-    //score = 65535 / total_time; between 0 and 12 ish?
+    ++num_right;
+    score+= 10-(10*T0_overflows/wait_time);
     return score;
 }
