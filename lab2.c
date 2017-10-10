@@ -209,6 +209,7 @@ void Mode_Select(void)
      */
     wait_converter = ((float)read_AD_input(1) / 255) * 1519 + 169;
 	wait_time = wait_converter;
+	printf("Your wait time is: %d\r\n\r\n", wait_time);
 
     if(SS1 && PB0)
     {
@@ -593,7 +594,7 @@ void startSequence(void)
 
     TR0=1;
     while (T0_overflows < 169) { }
-    TR0=0
+    TR0=0;
     LED0=1;
 
     TMR0 = 0; //clear timer
