@@ -648,15 +648,17 @@ void startSequence(void)
 
 unsigned int answeredCorrect(void)
 {
-    ++num_right;
-    total_time += T0_overflows;
-    return total_time;
+    //++num_right;
+    //total_time += T0_overflows;
+    score+= 10-(10*T0_overflows/wait_time)
+    //return total_time;
+    return score;
 }
 
 unsigned int answeredIncorrect(void)
 {
     //penalize wrong answers - taking less time for wrong answers won't benefit your score.
-    total_time += 3*wait_time + T0_overflows;
+    //total_time += 3*wait_time + T0_overflows;
     return total_time;
 }
 
@@ -664,7 +666,7 @@ unsigned int calcScore(void)
 {
     //8 rounds * 1690 max time per round.
     //max time / time taken
-    score = 135200000 / total_time; //between 1700 and 19000 ish?
+    //score = 135200000 / total_time; //between 1700 and 19000 ish?
     //score = 65535 / total_time; between 0 and 12 ish?
     return score;
 }
