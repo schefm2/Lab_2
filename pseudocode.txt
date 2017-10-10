@@ -26,6 +26,8 @@ function prototypes
 	unsigned int enteredBinary(void);
 	void startSequence(void);
 	unsigned char read_AD_input(unsigned char pin_number);
+	unsigned int answeredCorrect(void);
+	unsigned int answeredIncorrect(void);
 	unsigned int calcScore(void);
 
 main function
@@ -167,13 +169,37 @@ Functions
 	End manipulateLEDs
 	
 	enteredBinary
-		
+        clear old data
+        if (LED0 is on)
+            increment data
+        left-shift data
+        if (LED1 is on)
+            increment data
+        left-shift data
+        if (LED2 is on)
+            increment data
+        left-shift data
+        if (LED3 is on)
+            increment data
+        return data
 	End enteredBinary
 	
 	startSequence
 		
 	End startSequence
 	
+    answeredCorrect
+        add time taken for this question to total_time
+        return total_time
+    End answeredCorrect
+
+    answeredIncorrect
+        add time taken for this question to total_time
+        add penalty for wrong answer: 3*wait_time
+        return total_time
+    End answeredIncorrect
+
 	calcScore
-		
+		calculate score = pseudo-arbitrary large number / total_time
+        return score
 	End calcScore

@@ -664,7 +664,9 @@ unsigned int calcScore(void)
 {
     //8 rounds * 1690 max time per round.
     //max time / time taken
-    score = 135200000 / total_time; //between 1700 and 19000 ish?
+    // The benefit of having the large numerator is that close scores are easier to distinguish.
+    // No one should really be able to get a time so fast that it overflows score...
+    score = 13520000 / total_time; //between 170 and 1900 ish?
     //score = 65535 / total_time; between 0 and 12 ish?
     return score;
 }
