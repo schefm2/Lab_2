@@ -391,6 +391,7 @@ void Hex_To_Bin(void)
 //**********************************
 void Bin_To_Hex(void)
 {
+    //print mode instructions
 	printf("\r\nConvert from Binary values to Hex!\r\n");
     printf("The the LEDs will light up to display a binary value: lit LED = 1, unlit = 0.\r\n");
     printf("Press the corresponding hex character on your keyboard to sumbit your answer\r\n");
@@ -399,6 +400,7 @@ void Bin_To_Hex(void)
 	num_right = 0;
 	score = 0;
 
+    //visual start to game
 	startSequence();
 
     while(rounds<8)
@@ -406,7 +408,7 @@ void Bin_To_Hex(void)
 		j=0; //clear counting variable for loop
 		toConvert=random(); //randomly selects number to convert
 		answer=toConvert; //save random number for later comparison
-		rounds++;
+		rounds++; //iterate round number
         LED0 = 1; //off
         LED1 = 1;
         LED2 = 1;
@@ -429,14 +431,14 @@ void Bin_To_Hex(void)
                 if(j==2){LED1=0;}
                 if(j==3){LED0=0;}
             }
-            toConvert /= 2;
+            toConvert /= 2; //changes number to convert so the next binary digit can be checked then displayed
 			j++;
         }
-		j=0;
+		j=0; //reset loop counter
         TR0 = 1; //start timer
-        input = getchar();
+        input = getchar(); //get players hex value guess
         TR0 = 0; //stop timer
-        if(T0_overflows>wait_time)
+        if(T0_overflows>wait_time) //checks to see if player is awarded points or if they waited over the wait time allowed
         {
 			printf("You took too long, no points awarded.\r\n");
         }
@@ -453,6 +455,7 @@ void Bin_To_Hex(void)
                     //turn LED green
                     BLED1 = 0;
                     BLED2 = 1;
+                    //add to score and increment number right
                     num_right++;
                     score +=  10-(10*T0_overflows)/wait_time;
 
@@ -471,10 +474,11 @@ void Bin_To_Hex(void)
                 //convert ascii of hex to decimal and compare to answer
                 if(((int)input-48)== answer)
                 {
-                    num_right++;
                     //turn LED green
                     BLED1=0;
                     BLED2=1;
+                    //add to score and increment number right
+                    num_right++;
                     score +=  10 - (10*T0_overflows)/wait_time;
                 }
                 else
@@ -549,18 +553,22 @@ unsigned int enteredBinary(void)
     return bin_val_sub;
 }
 
+//the pretty stuff before round starts
 void startSequence(void)
 {
     TMR0 = 0; //clear timer
     T0_overflows = 0;
 
+    //sounds buzzer and lights red led for .5 seconds
     BUZZ=0;
     LED3=0;
     TR0 = 1;
     while (T0_overflows < 169) { }
     LED3=1;
     BUZZ=1;
+    //wait a quarter second
     while (T0_overflows < 254) { }
+    //sounds buzzer and lights orange led for .5 seconds
     LED2 = 0;
     BUZZ=0;
     TR0=0;
@@ -572,7 +580,9 @@ void startSequence(void)
     while (T0_overflows < 169) { }
     LED2 = 1;
     BUZZ=1;
+    //wait a quarter second
     while (T0_overflows < 254) { }
+    //sounds buzzer and lights yellow led for .5 seconds
     LED1 = 0;
     BUZZ=0;
     TR0=0;
@@ -584,7 +594,9 @@ void startSequence(void)
     while (T0_overflows < 169) { }
     LED1 = 1;
     BUZZ=1;
+    //wait a quarter second
     while (T0_overflows < 254) { }
+    //lights green led for half a second
     LED0 = 0;
     TR0=0;
 
