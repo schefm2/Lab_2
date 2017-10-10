@@ -25,6 +25,7 @@ function prototypes
 	void manipulateLEDs(void);
 	unsigned int enteredBinary(void);
 	void startSequence(void);
+	unsigned char read_AD_input(unsigned char pin_number);
 
 main function
 	declare local variables
@@ -84,8 +85,48 @@ Functions
 	End Game_Start
 	
 	Mode_Select
-		
+		Calculated wait_time using wait_converter
+		If Competitive Mode pushbutton NOT held and slide switch is to left
+			Run Bin_To_Hex
+		If Competitive Mode pushbutton held and slide switch is to left
+			Run Bin_To_Hex
+			Store score
+			Run Bin_To_Hex
+			End_Game
+		If Competitive Mode pushbutton held and slide switch is to right
+			Run Hex_To_Bin
+			Store score
+			Run Hex_To_Bin
+			End_Game
+		If Competitive Mode pushbutton NOT held and slide switch is to right
+			Run Hex_To_Bin
 	End Mode_Select
+	
+	End_Game
+		Print statement for end of competitive mode
+		Compare scores of first and second player
+		Print corresponding message
+	End End_Game
+	
+	The_Seeder
+		Records state of SS1
+		Starts Timer0
+		When SS1 is flicked, stop Timer0
+		T0_overflows is used to seed rand()
+		Reset Timer0
+	End The_Seeder
+	
+	random
+		return rand() % 15 for a random char 0 thru 15 inclusive
+	End random
+	
+	read_AD_input
+		Set multiplexer pin to be converted
+		Clear A/D conversion bit
+		Start A/D conversion
+		Wait until conversion finishes
+		return ADC1
+	End read_AD_input
 	
 	Bin_To_Hex
 		Display brief instructions
