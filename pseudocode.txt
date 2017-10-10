@@ -138,8 +138,33 @@ Functions
 
         For 8 rounds
             turn off all LED, buzzer, pause timer
-            
-		
+            store switch state, clear overflow counter, clear timer bits
+
+            generate a random number for the round
+            print "Convert %x", number
+
+            start timer
+            while there is time left
+                let the player manipulate LEDs to put in their answer
+                if the right slide switch changed, they submitted
+                    break
+
+            pause timer
+
+            call enteredBinary //determine answer submitted
+            if answer correct
+                BiLED = green
+                call answeredCorrect for score
+            else
+                BiLED = red
+                call answeredIncorrect for score
+
+            wait before starting next round
+        
+        calculate score with calcScore
+
+        print results: ("score %d, right answers $d", score, num_right)
+
 	End Hex_To_Bin
 	
 	Bin_To_Hex
