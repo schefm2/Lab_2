@@ -26,6 +26,7 @@ function prototypes
 	unsigned int enteredBinary(void);
 	void startSequence(void);
 	unsigned char read_AD_input(unsigned char pin_number);
+	unsigned int calcScore(void);
 
 main function
 	declare local variables
@@ -128,6 +129,10 @@ Functions
 		return ADC1
 	End read_AD_input
 	
+	Hex_To_Bin
+		
+	End Hex_To_Bin
+	
 	Bin_To_Hex
 		Display brief instructions
 		Zero the game score and round number
@@ -156,3 +161,19 @@ Functions
 
 		Display the final score and sound the buzzer for ~0.5 second
 	End Bin_To_Hex
+	
+	manipulateLEDs
+		
+	End manipulateLEDs
+	
+	enteredBinary
+		
+	End enteredBinary
+	
+	startSequence
+		
+	End startSequence
+	
+	calcScore
+		
+	End calcScore
