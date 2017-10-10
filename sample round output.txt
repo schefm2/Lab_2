@@ -1,0 +1,52 @@
+ 
+Please turn the leftmost slide switch to generate a random game
+To select the Bin to Hex game mode, move the leftmost slide switch to the left.
+To select the Hex to Bin game mode, move the leftmost slide switch to the right.
+Rotate the blue potentiometer clockwise to speed up the wait time for a game round.
+When you are ready to start the game, flip the slideswitch on the right.
+
+Your wait time is: 1688
+
+
+Convert from Hex values to Binary!
+Use the push buttons to light up the LEDs; lit LED = 1, unlit = 0.
+When ready, flip the enter switch!
+
+Convert b
+Convert 5
+Convert e
+Convert b
+Convert c
+Convert 7
+Convert 7
+Convert b
+
+You've completed the game! Your score was 32: you answered 8 out of 8 right.
+
+To select the Bin to Hex game mode, move the leftmost slide switch to the left.
+To select the Hex to Bin game mode, move the leftmost slide switch to the right.
+Rotate the blue potentiometer clockwise to speed up the wait time for a game round.
+When you are ready to start the game, flip the slideswitch on the right.
+
+Your wait time is: 1688
+
+
+Convert from Binary values to Hex!
+The the LEDs will light up to display a binary value: lit LED = 1, unlit = 0.
+Press the corresponding hex character on your keyboard to sumbit your answer. No capital letters!
+8
+0
+8
+c
+4
+8
+8
+6
+
+You've completed the game! Your score was 55: you answered 7 out of 8 right.
+
+To select the Bin to Hex game mode, move the leftmost slide switch to the left.
+To select the Hex to Bin game mode, move the leftmost slide switch to the right.
+Rotate the blue potentiometer clockwise to speed up the wait time for a game round.
+When you are ready to start the game, flip the slideswitch on the right.
+

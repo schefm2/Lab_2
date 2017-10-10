@@ -1,0 +1,179 @@
+compiler directives
+	#include <c8051_SDCC.h>
+	#include <stdio.h>
+
+declare global variables
+	sbit SS1, SS2, PB0, PB1, PB2, PB3, LED0, LED1, LED2, LED3, BLED1, BLED2, BUZZ
+	unsigned char SS1MEM, SS2MEM, toConvert, rounds, num_right, bin_val_sub, input, answer
+	unsigned int T0_overflows, sub_count, score, scoreMEM, wait_time, j
+	float wait_converter
+
+function prototypes
+	void Port_Init(void);
+	void Timer_Init(void);
+	void Interrupt_Init();
+	void ADC_Init();
+	void Timer0_ISR(void) __interrupt 1;
+
+	void Game_Start(void);
+	void Mode_Select(void);
+	void End_Game(void);
+	void The_Seeder(void);
+	unsigned char random(void);
+	void Hex_To_Bin(void);
+	void Bin_To_Hex(void);
+	void manipulateLEDs(void);
+	unsigned int enteredBinary(void);
+	void startSequence(void);
+	unsigned char read_AD_input(unsigned char pin_number);
+	unsigned int calcScore(void);
+
+main function
+	declare local variables
+		(NONE)
+	initialization functions
+		Sys_Init();
+		Port_Init();
+		Interrupt_Init();
+		Timer_Init();
+		ADC_Init();
+		putchar(' ');
+		
+	Seed rand()
+	Begin infinite loop
+		Game_Start();
+		Mode_Select();
+	End infinite loop
+End main function
+
+
+
+
+Functions
+
+	Port_Init
+		Sets P3.0 to P3.6 as outputs
+		Sets P2.0 to P2.5 as inputs
+		Sets P1.1 as analog input
+	End Port_Init
+	
+	Timer_Init
+		Set Timer0 to use SYSCLK and 16 bit
+		Clear Timer0
+	End Timer_Init
+
+	Interrupt_Init
+		Enable global interrupts
+		Enable Timer0 overflow interrupt
+	End Interrupt_Init
+
+	ADC_Init
+		Set V_ref to 2.4V
+		Enable ADC1 converter
+		Wait while capacitors charge
+		Reset timer0 and T0_overflows
+		
+	End ADC_Init
+	
+	Timer0_ISR __interrupt 1
+		Increments T0_overflows
+	End Timer0_ISR __interrupt 1
+	
+	Game_Start
+		Set all outputs off
+		Print instructions of game
+		Wait until SS2 is flicked to start game
+	End Game_Start
+	
+	Mode_Select
+		Calculated wait_time using wait_converter
+		If Competitive Mode pushbutton NOT held and slide switch is to left
+			Run Bin_To_Hex
+		If Competitive Mode pushbutton held and slide switch is to left
+			Run Bin_To_Hex
+			Store score
+			Run Bin_To_Hex
+			End_Game
+		If Competitive Mode pushbutton held and slide switch is to right
+			Run Hex_To_Bin
+			Store score
+			Run Hex_To_Bin
+			End_Game
+		If Competitive Mode pushbutton NOT held and slide switch is to right
+			Run Hex_To_Bin
+	End Mode_Select
+	
+	End_Game
+		Print statement for end of competitive mode
+		Compare scores of first and second player
+		Print corresponding message
+	End End_Game
+	
+	The_Seeder
+		Records state of SS1
+		Starts Timer0
+		When SS1 is flicked, stop Timer0
+		T0_overflows is used to seed rand()
+		Reset Timer0
+	End The_Seeder
+	
+	random
+		return rand() % 15 for a random char 0 thru 15 inclusive
+	End random
+	
+	read_AD_input
+		Set multiplexer pin to be converted
+		Clear A/D conversion bit
+		Start A/D conversion
+		Wait until conversion finishes
+		return ADC1
+	End read_AD_input
+	
+	Hex_To_Bin
+		
+	End Hex_To_Bin
+	
+	Bin_To_Hex
+		Display brief instructions
+		Zero the game score and round number
+		Turn off all the LEDs and run start sequence function
+
+		For 8 rounds
+			Generate a random number from 0 to 15
+			for digits in binary check if last digit is 1
+				If bit 0 of the random number is 1, LED0 is lit
+				If bit 1 of the random number is 1, LED1 is lit
+				If bit 2 of the random number is 1, LED2 is lit
+				divide number to convert by two so checking last digit is valid
+			Clear the timer overflow_count value
+			Wait for a keyboard press [input = getchar()]
+			Save the overflow_count value
+		
+			convert character to int then convert ascii to decimal
+			If the key matches the random number, BLED is green, otherwise it is red
+
+			run calculate score function
+			Display the points for the try and total score on the terminal
+
+			Delay for 0.5 second
+			Turn off the BLED
+		End of the 8 tries loop
+
+		Display the final score and sound the buzzer for ~0.5 second
+	End Bin_To_Hex
+	
+	manipulateLEDs
+		
+	End manipulateLEDs
+	
+	enteredBinary
+		
+	End enteredBinary
+	
+	startSequence
+		
+	End startSequence
+	
+	calcScore
+		
+	End calcScore
