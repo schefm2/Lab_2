@@ -49,7 +49,45 @@ End main function
 
 Functions
 
-	Binary to Hex Function
+	Port_Init
+		Sets P3.0 to P3.6 as outputs
+		Sets P2.0 to P2.5 as inputs
+		Sets P1.1 as analog input
+	End Port_Init
+	
+	Timer_Init
+		Set Timer0 to use SYSCLK and 16 bit
+		Clear Timer0
+	End Timer_Init
+
+	Interrupt_Init
+		Enable global interrupts
+		Enable Timer0 overflow interrupt
+	End Interrupt_Init
+
+	ADC_Init
+		Set V_ref to 2.4V
+		Enable ADC1 converter
+		Wait while capacitors charge
+		Reset timer0 and T0_overflows
+		
+	End ADC_Init
+	
+	Timer0_ISR __interrupt 1
+		Increments T0_overflows
+	End Timer0_ISR __interrupt 1
+	
+	Game_Start
+		Set all outputs off
+		Print instructions of game
+		Wait until SS2 is flicked to start game
+	End Game_Start
+	
+	Mode_Select
+		
+	End Mode_Select
+	
+	Bin_To_Hex
 		Display brief instructions
 		Zero the game score and round number
 		Turn off all the LEDs and run start sequence function
@@ -76,3 +114,4 @@ Functions
 		End of the 8 tries loop
 
 		Display the final score and sound the buzzer for ~0.5 second
+	End Bin_To_Hex
