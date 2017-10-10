@@ -19,11 +19,12 @@
 	asking which mode they want to play and direction on how to continue.
 
     Extra Credit things:
-    We added an extra LED and pushbutton. This means the values the player is
+    1. We added an extra LED and pushbutton. This means the values the player is
     asked to convert actually get past 7, which means they get to actually
     interact with hex, not just binary and decimal.
-    We also have a score calculation based on time taken to answer, with
-    wrong answers penalized.
+    2. We also have a score calculation based on time taken to answer.
+    3. A competitive game mode has been added, where two players start a game
+
 */
 
 #include <c8051_SDCC.h> // include files. This file is available online
@@ -50,6 +51,11 @@ void Bin_To_Hex(void);					//Runs game mode with terminal input
 void manipulateLEDs(void);              //Read player button pushes, light LEDs
 unsigned int enteredBinary(void);       //Calculates answer from pushbuttons/LEDs
 void startSequence(void);				//Sounds buzzers and lights LEDs for before set of rounds
+
+
+unsigned int answeredCorrect(void);     //Increment stuff for correct answer
+unsigned int answeredIncorrect(void);   //Increment stuff for incorrect answer
+unsigned int calcScore(void);           //Calculate total score at end
 
 //Converts Analog Pot signal to Digital
 unsigned char read_AD_input(unsigned char pin_number);
@@ -80,6 +86,7 @@ float wait_converter;	//Allows wait_time to function properly
 unsigned int T0_overflows;      //Timer 0 overflow count
 unsigned int sub_count;         //used to refer to time started, like in debouncing
 unsigned int score;             //score for the game
+unsigned int total_time;        //total time taken to answer all questions, used for score
 unsigned int scoreMEM;			//Keeps track of previous score for competition
 unsigned int wait_time;         //time between questions, determined by A/DC
 
@@ -90,9 +97,9 @@ unsigned char rounds;           //what round we're on
 unsigned char num_right;        //number of rounds correctly answered
 unsigned char bin_val_sub;      //number in binary submitted
 
-unsigned char input;
-unsigned char answer;
-unsigned int j;
+unsigned char input;            //bin->hex input
+unsigned char answer;           //comparison for input
+unsigned int j;                 //loop counter
 
 //**************
 void main(void)
@@ -306,15 +313,18 @@ void Hex_To_Bin(void)
     score = 0;
     num_right = 0;
     rounds = 0;
+	T0_overflows = 0;
+	TMR0 = 0;
+    total_time = 0;
 
     startSequence();
 
 	BUZZ = 0;
-	T0_overflows = 0;
-	TMR0 = 0;
 	TR0 = 1;
 	while (T0_overflows < 169) {}
 	TR0 = 0;
+	T0_overflows = 0;
+	TMR0 = 0;
 	BUZZ = 1;
 
     while (rounds++ < 8) //increments round after reading
@@ -364,8 +374,7 @@ void Hex_To_Bin(void)
             BLED1 = 0;
             BLED2 = 1;
 
-            ++num_right;
-			score +=  10-(10*T0_overflows)/wait_time;
+            answeredCorrect();
         }
 
         else
@@ -374,6 +383,8 @@ void Hex_To_Bin(void)
             //red
             BLED1 = 1;
             BLED2 = 0;
+
+            answeredIncorrect();
         }
 
         //some time before next round starts
@@ -382,6 +393,8 @@ void Hex_To_Bin(void)
         while (T0_overflows < sub_count + 675) { }
         TR0 = 0;
     }
+
+    calcScore();
 
     printf("\r\nYou've completed the game! Your score was %d: you answered %d out of 8 right.\r\n\r\n",
             score, num_right);
@@ -453,8 +466,10 @@ void Bin_To_Hex(void)
                     //turn LED green
                     BLED1 = 0;
                     BLED2 = 1;
-                    num_right++;
-                    score +=  10-(10*T0_overflows)/wait_time;
+
+                    answeredCorrect();
+                    //score +=  10-(10*T0_overflows)/wait_time;
+                    // old boring score count.
 
                 }
                 else
@@ -462,6 +477,8 @@ void Bin_To_Hex(void)
                    //turn LED red
                     BLED1 = 1;
                     BLED2 = 0;
+
+                    answeredIncorrect();
                 }
             }
 
@@ -471,17 +488,19 @@ void Bin_To_Hex(void)
                 //convert ascii of hex to decimal and compare to answer
                 if(((int)input-48)== answer)
                 {
-                    num_right++;
                     //turn LED green
                     BLED1=0;
                     BLED2=1;
-                    score +=  10 - (10*T0_overflows)/wait_time;
+                    //score +=  10 - (10*T0_overflows)/wait_time;
+                    answeredCorrect();
                 }
                 else
                 {
                     //turn LED red
                     BLED1 = 1;
                     BLED2 = 0;
+
+                    answeredIncorrect();
                 }
             }
         }
@@ -496,6 +515,9 @@ void Bin_To_Hex(void)
         BLED1=1;
         BLED2=1;
     }
+
+    calcScore();
+
     printf("\r\nYou've completed the game! Your score was %d: you answered %d out of 8 right.\r\n\r\n",
             score, num_right);
     
@@ -542,10 +564,22 @@ unsigned int enteredBinary(void)
 {
     bin_val_sub = 0; //clear any old data
     //Add from largest bit to smallest bit.
-	if (!LED0) {bin_val_sub += 8;}
-	if (!LED1) {bin_val_sub += 4;}
-	if (!LED2) {bin_val_sub += 2;}
-	if (!LED3) {bin_val_sub += 1;}
+	if (!LED0)
+    {
+        ++bin_val_sub;
+    }
+    bin_val_sub = bin_val_sub << 1;
+	if (!LED1) {
+        ++bin_val_sub;
+    }
+    bin_val_sub = bin_val_sub << 1;
+	if (!LED2) {
+        ++bin_val_sub;
+    }
+    bin_val_sub = bin_val_sub << 1;
+	if (!LED3) {
+        ++bin_val_sub;
+    }
     return bin_val_sub;
 }
 
@@ -593,10 +627,32 @@ void startSequence(void)
 
     TR0=1;
     while (T0_overflows < 169) { }
-    TR0=0
+    TR0=0;
     LED0=1;
 
     TMR0 = 0; //clear timer
     T0_overflows = 0;
 }
 
+unsigned int answeredCorrect(void)
+{
+    ++num_right;
+    total_time += T0_overflows;
+    return total_time;
+}
+
+unsigned int answeredIncorrect(void)
+{
+    //penalize wrong answers - taking less time for wrong answers won't benefit your score.
+    total_time += 3*wait_time + T0_overflows;
+    return total_time;
+}
+
+unsigned int calcScore(void)
+{
+    //8 rounds * 1690 max time per round.
+    //max time / time taken
+    score = 135200000 / total_time; //between 1700 and 19000 ish?
+    //score = 65535 / total_time; between 0 and 12 ish?
+    return score;
+}
