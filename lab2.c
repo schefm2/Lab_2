@@ -511,7 +511,8 @@ void Bin_To_Hex(void)
                 }
             }
         }
-
+		printf("Your score is currently: %d\r\n", calcScore());
+		
         //some time before next round starts
         TMR0 = 0; //clear timer
         T0_overflows=0;
