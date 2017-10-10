@@ -167,15 +167,15 @@ Functions
 		wait 60 overflows to debounce
 		toggle led
 
-	if pushbutton zero is pushed
+	if pushbutton one is pushed
 		wait 60 overflows to debounce
 		toggle led
 
-	if pushbutton zero is pushed
+	if pushbutton two is pushed
 		wait 60 overflows to debounce
 		toggle led
 
-	if pushbutton zero is pushed
+	if pushbutton three is pushed
 		wait 60 overflows to debounce
 		toggle led
 	End manipulateLEDs
