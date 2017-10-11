@@ -84,7 +84,8 @@ float wait_converter;	//Allows wait_time to function properly
 
 unsigned int T0_overflows;      //Timer 0 overflow count
 unsigned int sub_count;         //used to refer to time started, like in debouncing
-unsigned int score;             //score for the game
+unsigned int score;             //score for the each try
+unsigned int scoreTotal;		//Score for each round
 unsigned int scoreMEM;			//Keeps track of previous score for competition
 unsigned int wait_time;         //time between questions, determined by A/DC
 
@@ -225,7 +226,7 @@ void Mode_Select(void)
 	{
 		//Runs Competitive mode
 		Hex_To_Bin();
-		scoreMEM = score;			//Stores score of player 1
+		scoreMEM = scoreTotal;			//Stores score of player 1
 		SS2MEM = SS2;				//Stores SS2 state in memory
 
     	//Sets all LEDs, BLED, and BUZZ off
@@ -246,7 +247,7 @@ void Mode_Select(void)
 	{
 		//Runs Competitive mode
 		Bin_To_Hex();
-		scoreMEM = score;			//Stores score of player 1
+		scoreMEM = scoreTotal;			//Stores score of player 1
 		SS2MEM = SS2;				//Stores SS2 state in memory
 
 		//Sets all LEDs, BLED, and BUZZ off
@@ -273,12 +274,12 @@ void Mode_Select(void)
 //**********************************
 void End_Game(void)
 {
-	printf("\r\n\r\nYou have finished competitive mode! Player 1 had a score of: %d\r\nPlayer 2 had a score of: %d\r\n", scoreMEM, score );
-	if (scoreMEM > score)
+	printf("\r\n\r\nYou have finished competitive mode! Player 1 had a score of: %d\r\nPlayer 2 had a score of: %d\r\n", scoreMEM, scoreTotal );
+	if (scoreMEM > scoreTotal)
 	{
 		printf("Player 1 wins!\r\n\r\n");
 	}
-	else if (scoreMEM < score)
+	else if (scoreMEM < scoreTotal)
 	{
 		printf("Player 2 wins!\r\n\r\n");
 	}
@@ -329,7 +330,7 @@ void Hex_To_Bin(void)
     printf("When ready, flip the enter switch!\r\n\r\n");
 
     //Init some vars
-    score = 0;
+    scoreTotal = 0;
     num_right = 0;
     rounds = 0;
 	T0_overflows = 0;
@@ -403,7 +404,7 @@ void Hex_To_Bin(void)
             BLED2 = 0;
         }
 		
-		printf("Your score is currently: %d\r\n", score);
+		printf("Your score is for this round is: %d\r\nYour score for this game: %d\r\n", score, scoreTotal);
 
         //some time before next round starts
         sub_count = T0_overflows;
@@ -413,7 +414,7 @@ void Hex_To_Bin(void)
     }
 
     printf("\r\nYou've completed the game! Your score was %d: you answered %d out of 8 right.\r\n\r\n",
-            score, num_right);
+            scoreTotal, num_right);
 
 }
 
@@ -427,7 +428,7 @@ void Bin_To_Hex(void)
 
 	rounds = 0; //clears rounds	
 	num_right = 0;
-	score = 0;
+	scoreTotal = 0;
 
     //visual start to game
 	startSequence();
@@ -518,7 +519,7 @@ void Bin_To_Hex(void)
                 }
             }
         }
-		printf("Your score is currently: %d\r\n", score);
+		printf("Your score is for this round is: %d\r\nYour score for this game: %d\r\n", score, scoreTotal);
 		
         //some time before next round starts
         TMR0 = 0; //clear timer
@@ -530,9 +531,9 @@ void Bin_To_Hex(void)
         BLED1=1;
         BLED2=1;
     }
-	
+
     printf("\r\nYou've completed the game! Your score was %d: you answered %d out of 8 right.\r\n\r\n",
-            score, num_right);
+            scoreTotal, num_right);
     
 	//sound buzzer
     BUZZ=0;
@@ -657,8 +658,8 @@ void startSequence(void)
 
 unsigned int answeredCorrect(void)
 {
-
     ++num_right;
-    score+= 10-(10*T0_overflows/wait_time);
+    score = 10-(10*T0_overflows/wait_time);
+	scoreTotal += score;
     return score;
 }
