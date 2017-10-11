@@ -94,11 +94,13 @@ Functions
 		If Competitive Mode pushbutton held and slide switch is to left
 			Run Bin_To_Hex
 			Store score
+			Reset all outputs
 			Run Bin_To_Hex
 			End_Game
 		If Competitive Mode pushbutton held and slide switch is to right
 			Run Hex_To_Bin
 			Store score
+			Reset all outputs
 			Run Hex_To_Bin
 			End_Game
 		If Competitive Mode pushbutton NOT held and slide switch is to right
