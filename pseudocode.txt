@@ -27,8 +27,6 @@ function prototypes
 	void startSequence(void);
 	unsigned char read_AD_input(unsigned char pin_number);
 	unsigned int answeredCorrect(void);
-	unsigned int answeredIncorrect(void);
-	unsigned int calcScore(void);
 
 main function
 	declare local variables
@@ -158,12 +156,11 @@ Functions
                 BiLED = green
                 call answeredCorrect for score
             else
-                BiLED = red
-                call answeredIncorrect for score
+                BiLED = 
+
+            print score
 
             wait before starting next round
-        
-        calculate score with calcScore
 
         print results: ("score %d, right answers $d", score, num_right)
 
@@ -187,9 +184,8 @@ Functions
 		
 			convert character to int then convert ascii to decimal
 			If the key matches the random number, BLED is green, otherwise it is red
-
-			run calculate score function
-			Display the points for the try and total score on the terminal
+			run answered correct function
+			Display the points for the round and total score on the terminal
 
 			Delay for 0.5 second
 			Turn off the BLED
@@ -251,17 +247,7 @@ Functions
 	End startSequence
 	
     answeredCorrect
-        add time taken for this question to total_time
-        return total_time
+        add to score
+        return score
     End answeredCorrect
 
-    answeredIncorrect
-        add time taken for this question to total_time
-        add penalty for wrong answer: 3*wait_time
-        return total_time
-    End answeredIncorrect
-
-	calcScore
-		calculate score = pseudo-arbitrary large number / total_time
-        return score
-	End calcScore
