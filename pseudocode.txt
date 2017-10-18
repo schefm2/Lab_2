@@ -5,7 +5,7 @@ compiler directives
 declare global variables
 	sbit SS1, SS2, PB0, PB1, PB2, PB3, LED0, LED1, LED2, LED3, BLED1, BLED2, BUZZ
 	unsigned char SS1MEM, SS2MEM, toConvert, rounds, num_right, bin_val_sub, input, answer
-	unsigned int T0_overflows, sub_count, score, scoreMEM, wait_time, j
+	unsigned int T0_overflows, sub_count, score, scoreTotal, scoreMEM, wait_time, j
 	float wait_converter
 
 function prototypes
@@ -72,7 +72,6 @@ Functions
 		Enable ADC1 converter
 		Wait while capacitors charge
 		Reset timer0 and T0_overflows
-		
 	End ADC_Init
 	
 	Timer0_ISR __interrupt 1
@@ -93,12 +92,14 @@ Functions
 			Run Bin_To_Hex
 			Store score
 			Reset all outputs
+			Wait until SS2 is flicked
 			Run Bin_To_Hex
 			End_Game
 		If Competitive Mode pushbutton held and slide switch is to right
 			Run Hex_To_Bin
 			Store score
 			Reset all outputs
+			Wait until SS2 is flicked
 			Run Hex_To_Bin
 			End_Game
 		If Competitive Mode pushbutton NOT held and slide switch is to right
@@ -120,7 +121,7 @@ Functions
 	End The_Seeder
 	
 	random
-		return rand() % 15 for a random char 0 thru 15 inclusive
+		return rand() % 16 for a random char 0 thru 15 inclusive
 	End random
 	
 	read_AD_input
@@ -247,7 +248,8 @@ Functions
 	End startSequence
 	
     answeredCorrect
-        add to score
+        calculate score
+		Add score to scoreTotal
         return score
     End answeredCorrect
 

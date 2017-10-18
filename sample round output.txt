@@ -8,20 +8,27 @@ When you are ready to start the game, flip the slideswitch on the right.
 Your wait time is: 1688
 
 
-Convert from Hex values to Binary!
-Use the push buttons to light up the LEDs; lit LED = 1, unlit = 0.
-When ready, flip the enter switch!
+Convert from Binary values to Hex!
+The the LEDs will light up to display a binary value: lit LED = 1, unlit = 0.
+Press the corresponding hex character on your keyboard to sumbit your answer. No capital letters!
+9
+Your score is currently: 8
+5
+Your score is currently: 13
+6
+Your score is currently: 22
+1
+Your score is currently: 31
+b
+Your score is currently: 37
+8
+Your score is currently: 37
+9
+Your score is currently: 44
+cYou took too long, no points awarded.
+Your score is currently: 44
 
-Convert 9
-Convert d
-Convert 3
-Convert 0
-Convert 7
-Convert c
-Convert b
-Convert b
-
-You've completed the game! Your score was 15511: you answered 8 out of 8 right.
+You've completed the game! Your score was 44: you answered 6 out of 8 right.
 
 To select the Bin to Hex game mode, move the leftmost slide switch to the left.
 To select the Hex to Bin game mode, move the leftmost slide switch to the right.
@@ -31,19 +38,28 @@ When you are ready to start the game, flip the slideswitch on the right.
 Your wait time is: 1688
 
 
-Convert from Binary values to Hex!
-The the LEDs will light up to display a binary value: lit LED = 1, unlit = 0.
-Press the corresponding hex character on your keyboard to sumbit your answer. No capital letters!
-e
-c
-e
-1
-0
-d
-4
-e
+Convert from Hex values to Binary!
+Use the push buttons to light up the LEDs; lit LED = 1, unlit = 0.
+When ready, flip the enter switch!
 
-You've completed the game! Your score was 7510: you answered 7 out of 8 right.
+Convert 6
+Your score is currently: 5
+Convert 4
+Your score is currently: 11
+Convert e
+Your score is currently: 17
+Convert d
+Your score is currently: 17
+Convert 7
+Your score is currently: 22
+Convert 7
+Your score is currently: 28
+Convert 9
+Your score is currently: 34
+Convert c
+Your score is currently: 38
+
+You've completed the game! Your score was 38: you answered 7 out of 8 right.
 
 To select the Bin to Hex game mode, move the leftmost slide switch to the left.
 To select the Hex to Bin game mode, move the leftmost slide switch to the right.
